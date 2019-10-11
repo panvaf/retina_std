@@ -9,6 +9,7 @@ pixel = 5           # in um
 temporal_res = .1  # in msec
 t_time = 100        # in sec
 
+# Note! The variable t is supposed to represent simulation counter, not actual time
 
 # Generic mother class for anything that is common across the building blocks 
 # (elements) of the circuits
@@ -104,6 +105,11 @@ class AmacrineCell(Element):
         
         super().__init__(inputs, weights)
         
+        if isinstance(attributes["temporal"],np.ndarray):
+                self.temporal = attributes["temporal"]
+        else:
+                self.temporal = Temporal(attributes)
+        
         self.activation = attributes["activation"]
         self.threshold = attributes["threshold"]
         
@@ -117,6 +123,61 @@ class AmacrineCell(Element):
             values = self.inputs.output[t]  # I do not think this is going to work, see how to modify
             temp = np.dot(values,self.w)
             self.output[t] = activation(temp,self.activation,self.threshold)
+        
+        return self.output[t]
+
+
+class GanglionCell(Element):
+    
+    def __init__(self, inputs, weights, attributes):
+        # Attributes: contains a list of attributes needed to define the cell. Can contain:
+        #       temporal: contains temporal receptive field or function name to produce it
+        #       duration: "time constant" of the temporal receptive field
+        #       activation: the nonlinear activation function of the output
+        #       threshold: threshold for the activation function
+        #   Can also contain other parameters required to define the receptive
+        #   field, look at respective function for what their name should be
+        
+        super().__init__(inputs, weights)
+        
+        if isinstance(attributes["temporal"],np.ndarray):
+                self.temporal = attributes["temporal"]
+        else:
+                self.temporal = Temporal(attributes)
+        
+        self.activation = attributes["activation"]
+        self.threshold = attributes["threshold"]
+        
+    def output(self,t):
+        # Ganglion cells receive recurrent connections
+
+        # assuming that inputs is a cell array of input objects
+        if not np.isnan(self.output[t]):
+            pass
+        else:
+            values = self.inputs.output[t]  # I do not think this is going to work, see how to modify
+            temp = np.dot(values,self.w)
+            self.output[t] = activation(temp,self.activation,self.threshold)
+        
+        return self.output[t]
+
+class Delay(Element):
+    
+    def __init__(self, inputs, weights, t_delay):
+        
+        super().__init__(inputs, weights)
+        # convert time to count
+        self.delay = np.round(t_delay/temporal_res)
+    
+    def output(self,t):
+        
+        if not np.isnan(self.output[t]):
+            pass
+        elif t < self.delay:   # If the time elapsed is not enough for the delay to have output
+            return 0
+        # Could have another case here for the end of the recording
+        else:
+            self.output[t] = self.inputs.output[t - self.delay]  # I do not think this is going to work, see how to modify
         
         return self.output[t]
 
