@@ -9,7 +9,7 @@ pixel = 5           # in um
 temporal_res = .1  # in msec
 t_time = 100        # in sec
 
-# Note! The variable t is supposed to represent simulation counter, not actual time
+# Note! The variable t in the classes is supposed to represent simulation counter, not actual time
 
 # Generic mother class for anything that is common across the building blocks 
 # (elements) of the circuits
@@ -211,12 +211,16 @@ def Temporal(attributes):
     # Define temporal receptive fields. Options:
     #    Adelson and Bergen 1985: "temporal" should be "Adelson_Bergen", other 
     #       parameters needed in "attributes": "duration"
+    #    Stretched sin: "temporal" should be "stretched_sin", other parameters
+    #       needed: "duration", "order"
     
     # Access global variables used throughout
     global temporal_res
     
     if np.array_equal(attributes["temporal"],'Adelson_Bergen'):
         temporal = Adelson_Bergen(1/attributes["duration"],temporal_res)
+    elif np.array_equal(attributes["temporal"],'stretched_sin'):
+        temporal = stretched_sin(attributes["duration"],attributes["order"],temporal_res)
         
     return temporal
 
@@ -224,11 +228,19 @@ def Temporal(attributes):
 def Adelson_Bergen(alpha,step):
     # Alpha acts as an inverse time constant. Equation (2.29) from Dayan & Abbott
     
-    t = np.linspace(0,step,20*alpha)
+    t = np.arange(0,20*alpha,step)
     norm_t  = alpha*t
     
     return alpha*np.exp(-norm_t)*(norm_t**5/np.math.factorial(5)-norm_t**7/np.math.factorial(7))
 
+def stretched_sin(tf,order,step):
+    # tf is the maximal length of the filter. Equation (6) from Keat et al 2001
+    
+    t = np.linspace(0,tf,step)
+    norm_t  = t/tf
+    
+    return np.sin(np.pi*order*(2*norm_t-norm_t**2))
+    
 
 def activation(h,function,threshold):
     # Computes output of elements. Options:
