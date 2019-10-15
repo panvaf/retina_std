@@ -28,7 +28,7 @@ class Element:
         self.inputs = inputs
         
         # preallocate matrix of activity for this cell
-        self.output = np.full((np.ceil(t_time/temporal_res*1000),),np.nan)
+        self.output = np.nan
         # Can be used to see if the cell has computed its output, to avoid
         # uneccesary computations. Can also be replaced by a time marker if the
         # network cannot be computed all at once. We do not focus on simulation for now
@@ -75,7 +75,7 @@ class BipolarCell(Element):
         self.activation = attributes["activation"]
         self.threshold = attributes["threshold"]
     
-    def output(self,t):
+    def output(self):
         # Since there is no recurrent connectivity involving bipolar cells,
         # we can compute all the output and then sample it from the other cells
         # Caveat: Figure 1 of Gollisch2010 involves recurrent connections
@@ -89,7 +89,7 @@ class BipolarCell(Element):
             temp = signal.fftconvolve(self.inputs[0],self.spatiotemporal,axes=2)
             self.output = activation(temp,self.activation,self.threshold)
         
-        return self.output[t]
+        return self.output
     
     
 class AmacrineCell(Element):
@@ -113,18 +113,18 @@ class AmacrineCell(Element):
         self.activation = attributes["activation"]
         self.threshold = attributes["threshold"]
         
-    def output(self,t):
+    def output(self):
         # Amacrine cells receive recurrent connections
 
         # assuming that inputs is a cell array of input objects
-        if not np.isnan(self.output[t]):
+        if not np.isnan(self.output):
             pass
         else:
-            values = self.inputs.output[t]  # I do not think this is going to work, see how to modify
+            values = self.inputs.output  # I do not think this is going to work, see how to modify
             temp = np.dot(values,self.w)
-            self.output[t] = activation(temp,self.activation,self.threshold)
+            self.output = activation(temp,self.activation,self.threshold)
         
-        return self.output[t]
+        return self.output
 
 
 class GanglionCell(Element):
@@ -148,18 +148,18 @@ class GanglionCell(Element):
         self.activation = attributes["activation"]
         self.threshold = attributes["threshold"]
         
-    def output(self,t):
+    def output(self):
         # Ganglion cells receive recurrent connections
 
         # assuming that inputs is a cell array of input objects
-        if not np.isnan(self.output[t]):
+        if not np.isnan(self.output):
             pass
         else:
-            values = self.inputs.output[t]  # I do not think this is going to work, see how to modify
+            values = self.inputs.output  # I do not think this is going to work, see how to modify
             temp = np.dot(values,self.w)
-            self.output[t] = activation(temp,self.activation,self.threshold)
+            self.output = activation(temp,self.activation,self.threshold)
         
-        return self.output[t]
+        return self.output
 
 class Delay(Element):
     
@@ -169,17 +169,15 @@ class Delay(Element):
         # convert time to count
         self.delay = np.round(t_delay/temporal_res)
     
-    def output(self,t):
+    def output(self):
         
-        if not np.isnan(self.output[t]):
+        if not np.isnan(self.output):
             pass
-        elif t < self.delay:   # If the time elapsed is not enough for the delay to have output
-            return 0
-        # Could have another case here for the end of the recording
         else:
-            self.output[t] = self.inputs.output[t - self.delay]  # I do not think this is going to work, see how to modify
+            self.output = np.roll(self.inputs.output,self.delay)
+            self.output[0:self.delay] = 0
         
-        return self.output[t]
+        return self.output
 
 
 def Spatial(attributes):
