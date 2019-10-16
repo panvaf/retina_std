@@ -1,7 +1,6 @@
 # Includes classes for all basic elements of the networks
 
 import numpy as np
-from scipy import signal
 
 # Global variables
 image = (200, 200)  # in um
@@ -9,7 +8,7 @@ pixel = 5           # in um
 temporal_res = .1  # in msec
 t_time = 100        # in sec
 
-# Generic mother class for anything that is common across the building blocks 
+# Generic parent class for anything that is common across the building blocks 
 # (elements) of the circuits
 
 class Element:
@@ -21,15 +20,15 @@ class Element:
         
         self.n_in = len(inputs)
         self.w = weights
-        # Am I allowed to pass an array of objects? I want to compute their
-        # output and used it is the output method
+        # Inputs is a list of objects. I want to compute their
+        # output and use it is the output method
         self.inputs = inputs
         
         # preallocate matrix of activity for this cell
         self.output = np.nan
         # Can be used to see if the cell has computed its output, to avoid
         # uneccesary computations. Can also be replaced by a time marker if the
-        # network cannot be computed all at once. We do not focus on simulation for now
+        # network cannot be computed all at once
         
     
 class BipolarCell(Element):
@@ -67,8 +66,9 @@ class BipolarCell(Element):
                 self.temporal = Temporal(attributes)
                 
             # Spatiotemporal receptive field is spatial * temporal
-            temp = self.temporal[np.newaxis,self.temporal[np.newaxis,:]]
-            self.spatiotemporal = self.spatial*temp
+            temp1 = self.temporal[np.newaxis,:]; temp1 = temp1[np.newaxis,:]
+            temp2 = np.expand_dims(self.spatial,2)
+            self.spatiotemporal = temp2*temp1
         
         else:
             self.spatiotemporal = attributes["spatiotemporal"]
@@ -79,18 +79,15 @@ class BipolarCell(Element):
         self.activation = attributes["activation"]
         self.threshold = attributes["threshold"]
     
-    def output(self):
+    def out(self):
         # Since there is no recurrent connectivity involving bipolar cells,
         # we can compute all the output and then sample it from the other cells
-        # Caveat: Figure 1 of Gollisch2010 involves recurrent connections
-        # between bipolar and amacrine cells, but this can be taken into account
-        # later if needed
+        
         if not np.isnan(self.output):
             pass
         else:
-            # assuming that inputs is always a cell array, the first cell should
-            # contain the image
-            temp = signal.fftconvolve(self.inputs[0],self.spatiotemporal,axes=2)
+            # the first element of the list 'inputs' should contain the image
+            temp = np.convolve(self.inputs[0],self.spatiotemporal)
             self.output = activation(temp,self.activation,self.threshold)
         
         return self.output
@@ -117,14 +114,14 @@ class AmacrineCell(Element):
         self.activation = attributes["activation"]
         self.threshold = attributes["threshold"]
         
-    def output(self):
+    def out(self):
         # Amacrine cells receive recurrent connections
 
-        # assuming that inputs is a cell array of input objects
+        # assuming that inputs is a list of input objects
         if not np.isnan(self.output):
             pass
         else:
-            values = self.inputs.output  # I do not think this is going to work, see how to modify
+            values = self.inputs.out()  # I do not think this is going to work, see how to modify
             temp = np.dot(values,self.w)
             self.output = activation(temp,self.activation,self.threshold)
         
@@ -152,14 +149,14 @@ class GanglionCell(Element):
         self.activation = attributes["activation"]
         self.threshold = attributes["threshold"]
         
-    def output(self):
+    def out(self):
         # Ganglion cells receive recurrent connections
 
-        # assuming that inputs is a cell array of input objects
+        # assuming that inputs is a list of input objects
         if not np.isnan(self.output):
             pass
         else:
-            values = self.inputs.output  # I do not think this is going to work, see how to modify
+            values = self.inputs.out()  # I do not think this is going to work, see how to modify
             temp = np.dot(values,self.w)
             self.output = activation(temp,self.activation,self.threshold)
         
@@ -173,12 +170,12 @@ class Delay(Element):
         # convert time to count
         self.delay = np.round(t_delay/temporal_res)
     
-    def output(self):
+    def out(self):
         
         if not np.isnan(self.output):
             pass
         else:
-            self.output = np.roll(self.inputs.output,self.delay)
+            self.output = np.roll(self.inputs.out(),self.delay)
             self.output[0:self.delay] = 0
         
         return self.output
@@ -201,8 +198,8 @@ def Spatial(attributes):
 def mexican_hat(sigma,center,image,pixel):
     # The width is the standard deviation of the wavelet
     
-    x = np.arange(0,pixel,np.floor(image[0]/pixel))
-    y = np.arange(0,pixel,np.floor(image[1]/pixel))
+    x = np.arange(0,image[0],pixel)
+    y = np.arange(0,image[1],pixel)
     X, Y = np.meshgrid(x,y)
     norm_dist = 1/2*(((X-center[0])**2+(Y-center[1])**2)/sigma**2)
     
