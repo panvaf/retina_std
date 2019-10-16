@@ -121,7 +121,7 @@ class AmacrineCell(Element):
         if not np.isnan(self.output):
             pass
         else:
-            values = self.inputs.out()  # I do not think this is going to work, see how to modify
+            values = np.asarray(list(map(lambda x: x.out(),self.inputs)))
             temp = np.dot(values,self.w)
             self.output = activation(temp,self.activation,self.threshold)
         
@@ -156,7 +156,7 @@ class GanglionCell(Element):
         if not np.isnan(self.output):
             pass
         else:
-            values = self.inputs.out()  # I do not think this is going to work, see how to modify
+            values = np.asarray(list(map(lambda x: x.out(),self.inputs)))
             temp = np.dot(values,self.w)
             self.output = activation(temp,self.activation,self.threshold)
         
