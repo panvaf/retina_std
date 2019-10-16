@@ -9,8 +9,6 @@ pixel = 5           # in um
 temporal_res = .1  # in msec
 t_time = 100        # in sec
 
-# Note! The variable t in the classes is supposed to represent simulation counter, not actual time
-
 # Generic mother class for anything that is common across the building blocks 
 # (elements) of the circuits
 
@@ -38,6 +36,7 @@ class BipolarCell(Element):
     
     def __init__(self, inputs, weights, attributes):
         # Attributes: contains a list of attributes needed to define the cell. Can contain:
+        #       type: can be "On" or "Off" 
         #       separable: determines whether spatiotemporal field is separable, boolean
         #       spatiotemporal: contains given spatiotemporal receptive field
         #       spatial: contains spatial receptive field or function name to produce it
@@ -48,10 +47,12 @@ class BipolarCell(Element):
         #       activation: the nonlinear activation function of the output
         #       threshold: threshold for the activation function
         #   Can also contain other parameters required to define the receptive
-        #   field, look at respective function for what their name should be
+        #   field, look at respective function for what their name and
+        #   specification should be
         
         super().__init__(inputs, weights)
         
+        self.type = attributes["type"]
         self.separable = attributes["separable"]
         if self.separable:
             
@@ -72,6 +73,9 @@ class BipolarCell(Element):
         else:
             self.spatiotemporal = attributes["spatiotemporal"]
             
+        if np.array_equal(self.type,"Off"):
+            self.spatiotemporal = - self.spatiotemporal
+        
         self.activation = attributes["activation"]
         self.threshold = attributes["threshold"]
     
@@ -197,8 +201,8 @@ def Spatial(attributes):
 def mexican_hat(sigma,center,image,pixel):
     # The width is the standard deviation of the wavelet
     
-    x = np.linspace(0,pixel,np.floor(image[0]/pixel))
-    y = np.linspace(0,pixel,np.floor(image[1]/pixel))
+    x = np.arange(0,pixel,np.floor(image[0]/pixel))
+    y = np.arange(0,pixel,np.floor(image[1]/pixel))
     X, Y = np.meshgrid(x,y)
     norm_dist = 1/2*(((X-center[0])**2+(Y-center[1])**2)/sigma**2)
     
@@ -210,7 +214,7 @@ def Temporal(attributes):
     #    Adelson and Bergen 1985: "temporal" should be "Adelson_Bergen", other 
     #       parameters needed in "attributes": "duration"
     #    Stretched sin: "temporal" should be "stretched_sin", other parameters
-    #       needed: "duration", "order"
+    #       needed: "duration", "coeffs"
     
     # Access global variables used throughout
     global temporal_res
@@ -218,7 +222,7 @@ def Temporal(attributes):
     if np.array_equal(attributes["temporal"],'Adelson_Bergen'):
         temporal = Adelson_Bergen(1/attributes["duration"],temporal_res)
     elif np.array_equal(attributes["temporal"],'stretched_sin'):
-        temporal = stretched_sin(attributes["duration"],attributes["order"],temporal_res)
+        temporal = stretched_sin(attributes["duration"],attributes["coeffs"],temporal_res)
         
     return temporal
 
@@ -231,10 +235,23 @@ def Adelson_Bergen(alpha,step):
     
     return alpha*np.exp(-norm_t)*(norm_t**5/np.math.factorial(5)-norm_t**7/np.math.factorial(7))
 
-def stretched_sin(tf,order,step):
-    # tf is the maximal length of the filter. Equation (6) from Keat et al 2001
+def stretched_sin(tf,coeffs,step):
+    # Computes equation (5) from Keat et al 2001
+    # tf is the maximal length of the filter
+    # coeffs should be a numpy array with the corresponding coefficient of the
+    # n-th term of (5) in position n-1
     
-    t = np.linspace(0,tf,step)
+    filt = 0
+    
+    for i in range(len(coeffs)):
+        filt = filt + coeffs[i]*stretched_sin_basis(tf,i+1,step)
+        
+    return filt
+
+def stretched_sin_basis(tf,order,step):
+    # Equation (6) from Keat et al 2001
+    
+    t = np.arange(0,tf,step)
     norm_t  = t/tf
     
     return np.sin(np.pi*order*(2*norm_t-norm_t**2))
