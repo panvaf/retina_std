@@ -97,8 +97,10 @@ class AmacrineCell(Element):
     
     def __init__(self, inputs, weights, attributes):
         # Attributes: contains a list of attributes needed to define the cell. Can contain:
-        #       temporal: contains temporal receptive field or function name to produce it
-        #       duration: "time constant" of the temporal receptive field
+        #       temporal: contains temporal receptive fields as matrix or list
+        #       of function names to produce them. Each input has a different
+        #       corresponding receptive field
+        #       duration: array of "time constants" of temporal receptive fields
         #       activation: the nonlinear activation function of the output
         #       threshold: threshold for the activation function
         #   Can also contain other parameters required to define the receptive
@@ -109,7 +111,7 @@ class AmacrineCell(Element):
         if isinstance(attributes["temporal"],np.ndarray):
                 self.temporal = attributes["temporal"]
         else:
-                self.temporal = Temporal(attributes)
+                self.temporal = Temporal_multiple(attributes,self.n_in)
         
         self.activation = attributes["activation"]
         self.threshold = attributes["threshold"]
@@ -122,6 +124,11 @@ class AmacrineCell(Element):
             pass
         else:
             values = np.asarray(list(map(lambda x: x.out(),self.inputs)))
+            
+            for i in range(self.n_in):
+                # Special temporal receptive field for each input
+                values[i,:] = np.convolve(values[i,:],self.temporal[i],'same')
+                
             temp = np.dot(values,self.w)
             self.output = activation(temp,self.activation,self.threshold)
         
@@ -156,7 +163,14 @@ class GanglionCell(Element):
         if not np.isnan(self.output):
             pass
         else:
+            # care must be taken that the length of all arrays is equal. So to it
+            # for values, after this it is ok
             values = np.asarray(list(map(lambda x: x.out(),self.inputs)))
+            
+            for i in range(self.n_in):
+                # Special temporal receptive field for each input
+                values[i,:] = np.convolve(values[i,:],self.temporal[i],'same')
+           
             temp = np.dot(values,self.w)
             self.output = activation(temp,self.activation,self.threshold)
         
@@ -212,6 +226,21 @@ def DoG(sigmas,ratio,center,image,pixel):
     
     return (gauss1 - gauss2)/(1+ratio) 
 
+
+def Temporal_multiple(attributes,n):
+    # Unpacks contents of attributes and passes them one at a time to Temporal()
+    # Returns list of receptive fields, each one corresponding to one input
+    
+    temporals = [None]*n
+    atts = attributes
+    
+    for i in range(n):
+        atts["temporal"] = attributes["temporal"][i]
+        atts["duration"] = attributes["duration"][i]
+        atts["coeffs"] =  attributes["coeffs"][i]
+        temporals[i] = Temporal(atts)
+        
+    return temporals
 
 def Temporal(attributes):
     # Define temporal receptive fields. Options:
