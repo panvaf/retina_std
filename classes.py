@@ -12,7 +12,7 @@ t_time = 100        # in sec
 # (elements) of the circuits
 
 class Element:
-  
+
     # Every element contains the name of its inputs and the corresponding weights
     def __init__(self, inputs, weights):
         # Inputs: array of input elements to this element
@@ -183,27 +183,34 @@ class Delay(Element):
 
 def Spatial(attributes):
     # Define spatial receptive fields. Options:
-    #    mexican hat: "spatial" should be "mexican hat", other parameters
-    #    needed in "attributes": "width", "center"
+    #    difference of gaussians: "spatial" should be "DoG", other parameters
+    #    needed in "attributes": "width", "center", "Sp_filt_amps"
     
     # Access global variables used throughout
     global image, pixel
     
     if np.array_equal(attributes["spatial"],'mexican hat'):
-        spatial = mexican_hat(attributes["width"],attributes["center"],image,pixel)
+        spatial = DoG(attributes["width"],attributes["Sp_filt_amps"],attributes["center"],image,pixel)
         
     return spatial
 
 
-def mexican_hat(sigma,center,image,pixel):
-    # The width is the standard deviation of the wavelet
+def DoG(sigmas,ratio,center,image,pixel):
+    # Sigmas contain the standard deviations the positive (center) and negative
+    # (surround) part. To invert the parts. use argument "type" in attributes
+    # Ratio is the ratio of the peaks of the gaussians (center/surround)
     
     x = np.arange(0,image[0],pixel)
     y = np.arange(0,image[1],pixel)
     X, Y = np.meshgrid(x,y)
-    norm_dist = 1/2*(((X-center[0])**2+(Y-center[1])**2)/sigma**2)
     
-    return 1/(np.pi*sigma**2)*(1-norm_dist)*np.exp(-norm_dist)
+    norm_dist1 = 1/2*(((X-center[0])**2+(Y-center[1])**2)/sigmas[0]**2)
+    norm_dist2 = 1/2*(((X-center[0])**2+(Y-center[1])**2)/sigmas[1]**2)
+    gauss1 = ratio/(2*np.pi*sigmas[0]**2)*np.exp(-norm_dist1)
+    gauss2 = 1/(2*np.pi*sigmas[1]**2)*np.exp(-norm_dist2)
+    # Normalization? Should it not be zero sum? (no reaction to constant input)
+    
+    return (gauss1 - gauss2)/(1+ratio) 
 
 
 def Temporal(attributes):
