@@ -139,8 +139,10 @@ class GanglionCell(Element):
     
     def __init__(self, inputs, weights, attributes):
         # Attributes: contains a list of attributes needed to define the cell. Can contain:
-        #       temporal: contains temporal receptive field or function name to produce it
-        #       duration: "time constant" of the temporal receptive field
+        #       temporal: contains temporal receptive fields as matrix or list
+        #       of function names to produce them. Each input has a different
+        #       corresponding receptive field
+        #       duration: array of "time constants" of temporal receptive fields
         #       activation: the nonlinear activation function of the output
         #       threshold: threshold for the activation function
         #   Can also contain other parameters required to define the receptive
@@ -151,7 +153,7 @@ class GanglionCell(Element):
         if isinstance(attributes["temporal"],np.ndarray):
                 self.temporal = attributes["temporal"]
         else:
-                self.temporal = Temporal(attributes)
+                self.temporal = Temporal_multiple(attributes,self.n_in)
         
         self.activation = attributes["activation"]
         self.threshold = attributes["threshold"]
@@ -176,6 +178,7 @@ class GanglionCell(Element):
         
         return self.output
 
+
 class Delay(Element):
     
     def __init__(self, inputs, weights, t_delay):
@@ -189,8 +192,28 @@ class Delay(Element):
         if not np.isnan(self.output):
             pass
         else:
-            self.output = np.roll(self.inputs.out(),self.delay)
+            self.output = np.roll(self.inputs[0].out(),self.delay)
             self.output[0:self.delay] = 0
+        
+        return self.output
+
+
+class PresynapticSilencer(Element):
+    
+    # Used so that amacrine cells can silence bipolar cells before reaching
+    # cells. Necessary component for OMS cells
+    
+    def __init__(self, inputs, weights):
+        
+        super().__init__(inputs, weights)
+            
+    def out(self):
+        
+        if not np.isnan(self.output):
+            pass
+        else:
+            values = np.asarray(list(map(lambda x: x.out(),self.inputs)))
+            self.output = self.weights[0]*values[0] - self.weights[1]*values[1]
         
         return self.output
 
