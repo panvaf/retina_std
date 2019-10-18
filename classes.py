@@ -145,6 +145,7 @@ class GanglionCell(Element):
         #       duration: array of "time constants" of temporal receptive fields
         #       activation: the nonlinear activation function of the output
         #       threshold: threshold for the activation function
+        #       recurrent: recurrent filter coefficients
         #   Can also contain other parameters required to define the receptive
         #   field, look at respective function for what their name should be
         
@@ -157,6 +158,11 @@ class GanglionCell(Element):
         
         self.activation = attributes["activation"]
         self.threshold = attributes["threshold"]
+        
+        if "recurrent" in attributes:
+            self.recurrent = attributes["recurrent"]
+        else:
+            self.recurrent = np.nan
         
     def out(self):
         # Ganglion cells receive recurrent connections
@@ -172,9 +178,21 @@ class GanglionCell(Element):
             for i in range(self.n_in):
                 # Special temporal receptive field for each input
                 values[i,:] = np.convolve(values[i,:],self.temporal[i],'same')
-           
+        
             temp = np.dot(values,self.w)
-            self.output = activation(temp,self.activation,self.threshold)
+            
+            if np.isnan(self.recurrent):
+                self.output = activation(temp,self.activation,self.threshold)
+            else:
+                time_p = np.size(temp,2); l = np.size(self.recurrent)
+                self.output = np.zeros((time_p,))
+                
+                for t in range(time_p):
+                    if t < l:
+                        self.output[t] = activation(temp[t],self.activation,self.threshold)
+                    else:
+                        temp[t] = temp[t] + np.dot(self.output[t-l:t],self.recurrent)
+                        self.output[t] = activation(temp[t],self.activation,self.threshold)
         
         return self.output
 
