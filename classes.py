@@ -1,12 +1,15 @@
-# Includes classes for all basic elements of the networks
-
-import numpy as np
+"""
+Includes classes for all basic elements of the networks.
+"""
 
 # Global variables
-image = (200, 200)  # in um
-pixel = 5           # in um
-temporal_res = .1  # in msec
-t_time = 100        # in sec
+image_size = [200, 200]      # in um
+pixel = 5                    # in um
+temporal_res = .1            # in msec
+t_time = 100                 # in sec
+
+import numpy as np
+import copy as cp
 
 # Generic parent class for anything that is common across the building blocks 
 # (elements) of the circuits
@@ -239,24 +242,24 @@ class PresynapticSilencer(Element):
 def Spatial(attributes):
     # Define spatial receptive fields. Options:
     #    difference of gaussians: "spatial" should be "DoG", other parameters
-    #    needed in "attributes": "width", "center", "Sp_filt_amps"
+    #    needed in "attributes": "width", "center", "on_off_ratio"
     
     # Access global variables used throughout
-    global image, pixel
+    global image_size, pixel
     
-    if np.array_equal(attributes["spatial"],'mexican hat'):
-        spatial = DoG(attributes["width"],attributes["Sp_filt_amps"],attributes["center"],image,pixel)
+    if np.array_equal(attributes["spatial"],'DoG'):
+        spatial = DoG(attributes["width"],attributes["on_off_ratio"],attributes["center"],image_size,pixel)
         
     return spatial
 
 
-def DoG(sigmas,ratio,center,image,pixel):
+def DoG(sigmas,ratio,center,image_size,pixel):
     # Sigmas contain the standard deviations the positive (center) and negative
     # (surround) part. To invert the parts. use argument "type" in attributes
     # Ratio is the ratio of the peaks of the gaussians (center/surround)
     
-    x = np.arange(0,image[0],pixel)
-    y = np.arange(0,image[1],pixel)
+    x = np.arange(0,image_size[0],pixel)
+    y = np.arange(0,image_size[1],pixel)
     X, Y = np.meshgrid(x,y)
     
     norm_dist1 = 1/2*(((X-center[0])**2+(Y-center[1])**2)/sigmas[0]**2)
@@ -273,7 +276,7 @@ def Temporal_multiple(attributes,n):
     # Returns list of receptive fields, each one corresponding to one input
     
     temporals = [None]*n
-    atts = attributes
+    atts = cp.deepcopy(attributes)
     
     for i in range(n):
         atts["temporal"] = attributes["temporal"][i]
