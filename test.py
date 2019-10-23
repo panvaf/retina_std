@@ -5,23 +5,40 @@ Create and run networks for testing.
 from classes import * # necessary to import object classes
 import numpy as np
 
-image = np.zeros((round(image_size[0]/pixel),round(image_size[1]/pixel),1))
+image = np.zeros((round(image_size[0]/pixel),round(image_size[1]/pixel),100))
 
-BipolarStruct1 = {"inputs":[image], "weights": np.array([1]), "attributes":
+BipolarStruct = {"inputs":[image], "weights": np.array([1]), "attributes":
     {'type': 'On', 'separable': True, 'spatial': 'DoG', 'width': [10, 20],
      'center': [0, 0], 'on_off_ratio': 3, 'temporal': 'stretched_sin',
      'duration': 10, 'coeffs': [1, -0.3, 0.1], 'activation': 'relu', 'threshold': 0}}
     
 # Create multiple bipolar cells of the same type
-Bipolars1 = [ BipolarCell(BipolarStruct1["inputs"],BipolarStruct1["weights"],BipolarStruct1["attributes"]) for i in range(10)]
+Bipolars = [ BipolarCell(BipolarStruct["inputs"],BipolarStruct["weights"],BipolarStruct["attributes"]) for i in range(10)]
 
 # need to find a more automated way to put together large networks, maybe use 
 # classes with parameters that can draw across an entire range of bipolar cells?
 
-AmacrineStruct1 = {"inputs":[Bipolars1[1],Bipolars1[2],Bipolars1[3]], 
-    "weights": np.array([1,1,1]), "attributes": {'temporal': ['stretched_sin', 'stretched_sin', 'stretched_sin'],
-    'duration': [1,1,1], 'coeffs': [[1],[1],[1]] , 'activation': 'relu', 'threshold': 0}}
+AmacrineStruct = {"inputs":[Bipolars[0],Bipolars[2],Bipolars[4]], 
+    "weights": np.array([1,1,1]), "attributes": {'temporal': ['stretched_sin', 
+     'stretched_sin', 'stretched_sin'], 'duration': [1,1,1], 'coeffs': [[1],[1],[1]],
+     'activation': 'relu', 'threshold': 0, 'recurrent': [1, -0.2]}}
     
-Amacrine1 = AmacrineCell(AmacrineStruct1["inputs"],AmacrineStruct1["weights"],AmacrineStruct1["attributes"])
+Amacrine = AmacrineCell(AmacrineStruct["inputs"],AmacrineStruct["weights"],AmacrineStruct["attributes"])
 
-Amacrine1.out()
+DelayStruct = {"inputs":[Amacrine],"weights": np.array([1]), "t_delay": 2}
+
+Buffer = Delay(DelayStruct["inputs"],DelayStruct["weights"],DelayStruct["t_delay"])
+
+GanglionStruct = {"inputs":[Bipolars[1],Bipolars[3],Bipolars[5],Buffer], 
+    "weights": np.array([1,1,1,-3]), "attributes": {'temporal': ['stretched_sin', 'stretched_sin', 'stretched_sin','stretched_sin'],
+    'duration': [1,1,1,1], 'coeffs': [[1],[1],[1],[1]] , 'activation': 'relu', 'threshold': 0}}
+    
+Ganglion = GanglionCell(GanglionStruct["inputs"],GanglionStruct["weights"],GanglionStruct["attributes"])
+
+a = Ganglion.out()
+
+SilencerStruct = {"inputs":[Amacrine,Bipolars[6]],"weights": np.array([-1,1])}
+
+Silencer = PresynapticSilencer(SilencerStruct["inputs"],SilencerStruct["weights"])
+
+b = Silencer.out()

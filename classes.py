@@ -2,15 +2,16 @@
 Includes classes for all basic elements of the networks.
 """
 
+# imports
+import numpy as np
+from scipy import signal
+import copy as cp
+
 # Global variables
 image_size = [200, 200]      # in um
 pixel = 5                    # in um
 temporal_res = .1            # in msec
 t_time = 100                 # in sec
-
-import numpy as np
-from scipy import signal
-import copy as cp
 
 ###############################################################################
 
@@ -197,7 +198,7 @@ class GanglionCell(Element):
                 # Special temporal receptive field for each input
                 # Change shape of temporal to convolve
                 temp = self.temporal[i][np.newaxis,:]; temp = temp[np.newaxis,:]
-                values[i,:] = signal.convolve(values[i,:],temp,'same',axis=2)
+                values[i,:] = signal.fftconvolve(values[i,:],temp,'same',axes=2)
         
             # Use transpose to do multiplication with np.dot
             temp = np.dot(values.transpose(),self.w).transpose()
@@ -227,11 +228,11 @@ class Delay(Element):
         
         super().__init__(inputs, weights)
         # convert time to count
-        self.delay = np.round(t_delay/temporal_res)
+        self.delay = int(np.round(t_delay/temporal_res))
     
     def out(self):
         
-        if not np.isnan(self.output):
+        if not np.any(np.isnan(self.output)):
             pass
         else:
             self.output = np.roll(self.inputs[0].out(),self.delay)
@@ -258,7 +259,7 @@ class PresynapticSilencer(Element):
             pass
         else:
             values = np.asarray(list(map(lambda x: x.out(),self.inputs)))
-            self.output = self.weights[0]*values[0] - self.weights[1]*values[1]
+            self.output = np.dot(values.transpose(),self.w).transpose()
         
         return self.output
 
