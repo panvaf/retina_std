@@ -224,11 +224,14 @@ class GanglionCell(Element):
 
 class Delay(Element):
     
-    def __init__(self, inputs, weights, t_delay):
+    def __init__(self, inputs, weights, attributes):
+        
+        # Attributes can contain:
+        # t_delay : time delay the element introduces
         
         super().__init__(inputs, weights)
         # convert time to count
-        self.delay = int(np.round(t_delay/temporal_res))
+        self.delay = int(np.round(attributes["t_delay"]/temporal_res))
     
     def out(self):
         
@@ -249,7 +252,7 @@ class PresynapticSilencer(Element):
     # Used so that amacrine cells can silence bipolar cells before reaching
     # cells. Necessary component for OMS cells
     
-    def __init__(self, inputs, weights):
+    def __init__(self, inputs, weights, attributes):
         
         super().__init__(inputs, weights)
             

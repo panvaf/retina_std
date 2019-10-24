@@ -25,9 +25,9 @@ AmacrineStruct = {"inputs":[Bipolars[0],Bipolars[2],Bipolars[4]],
     
 Amacrine = AmacrineCell(AmacrineStruct["inputs"],AmacrineStruct["weights"],AmacrineStruct["attributes"])
 
-DelayStruct = {"inputs":[Amacrine],"weights": np.array([1]), "t_delay": 2}
+DelayStruct = {"inputs":[Amacrine],"weights": np.array([1]), "attributes": {'t_delay': 2}}
 
-Buffer = Delay(DelayStruct["inputs"],DelayStruct["weights"],DelayStruct["t_delay"])
+Buffer = Delay(DelayStruct["inputs"],DelayStruct["weights"],DelayStruct["attributes"])
 
 GanglionStruct = {"inputs":[Bipolars[1],Bipolars[3],Bipolars[5],Buffer], 
     "weights": np.array([1,1,1,-3]), "attributes": {'temporal': ['stretched_sin', 'stretched_sin', 'stretched_sin','stretched_sin'],
@@ -37,8 +37,8 @@ Ganglion = GanglionCell(GanglionStruct["inputs"],GanglionStruct["weights"],Gangl
 
 a = Ganglion.out()
 
-SilencerStruct = {"inputs":[Amacrine,Bipolars[6]],"weights": np.array([-1,1])}
+SilencerStruct = {"inputs":[Amacrine,Bipolars[6]],"weights": np.array([-1,1]), "attributes":{}}
 
-Silencer = PresynapticSilencer(SilencerStruct["inputs"],SilencerStruct["weights"])
+Silencer = PresynapticSilencer(SilencerStruct["inputs"],SilencerStruct["weights"],SilencerStruct["attributes"])
 
 b = Silencer.out()
