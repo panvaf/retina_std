@@ -21,15 +21,19 @@ t_time = 100                 # in sec
 class Element:
 
     # Every element contains the name of its inputs and the corresponding weights
-    def __init__(self, inputs, weights):
+    def __init__(self, inputs, weights, center):
         # Inputs: array of input elements to this element
         # Weights: corresponding weights from these elements
+        # Center: tuple indicating position in 2-D neural sheet. It is also center
+        # of the receptive field for bipolar cells
         
         self.n_in = len(inputs)
         self.w = weights
         # Inputs is a list of objects. I want to compute their
         # output and use it is the output method
         self.inputs = inputs
+        # Needed to compute which elements to connect to this element
+        self.cemter = center
         
         # preallocate matrix of activity for this cell
         self.output = np.nan
@@ -43,7 +47,7 @@ class Element:
     
 class BipolarCell(Element):
     
-    def __init__(self, inputs, weights, attributes):
+    def __init__(self, inputs, weights, center, attributes):
         # Attributes: contains a list of attributes needed to define the cell. Can contain:
         #       type: can be "On" or "Off" 
         #       separable: determines whether spatiotemporal field is separable, boolean
@@ -52,14 +56,13 @@ class BipolarCell(Element):
         #       width: width of the spatial receptive field
         #       temporal: contains temporal receptive field or function name to produce it
         #       duration: "time constant" of the temporal receptive field
-        #       center: the center of the receptive field
         #       activation: the nonlinear activation function of the output
         #       threshold: threshold for the activation function
         #   Can also contain other parameters required to define the receptive
         #   field, look at respective function for what their name and
         #   specification should be
         
-        super().__init__(inputs, weights)
+        super().__init__(inputs, weights, center)
         
         self.type = attributes["type"]
         self.separable = attributes["separable"]
@@ -68,7 +71,7 @@ class BipolarCell(Element):
             if isinstance(attributes["spatial"],np.ndarray):
                 self.spatial = attributes["spatial"]
             else:
-                self.spatial = Spatial(attributes)
+                self.spatial = Spatial(self.center,attributes)
                 
             if isinstance(attributes["temporal"],np.ndarray):
                 self.temporal = attributes["temporal"]
@@ -108,7 +111,7 @@ class BipolarCell(Element):
     
 class AmacrineCell(Element):
     
-    def __init__(self, inputs, weights, attributes):
+    def __init__(self, inputs, weights, center, attributes):
         # Attributes: contains a list of attributes needed to define the cell. Can contain:
         #       temporal: contains temporal receptive fields as matrix or list
         #       of function names to produce them. Each input has a different
@@ -119,7 +122,7 @@ class AmacrineCell(Element):
         #   Can also contain other parameters required to define the receptive
         #   field, look at respective function for what their name should be
         
-        super().__init__(inputs, weights)
+        super().__init__(inputs, weights, center)
         
         if isinstance(attributes["temporal"],np.ndarray):
                 self.temporal = attributes["temporal"]
@@ -156,7 +159,7 @@ class AmacrineCell(Element):
 
 class GanglionCell(Element):
     
-    def __init__(self, inputs, weights, attributes):
+    def __init__(self, inputs, weights, center, attributes):
         # Attributes: contains a list of attributes needed to define the cell. Can contain:
         #       temporal: contains temporal receptive fields as matrix or list
         #       of function names to produce them. Each input has a different
@@ -168,7 +171,7 @@ class GanglionCell(Element):
         #   Can also contain other parameters required to define the receptive
         #   field, look at respective function for what their name should be
         
-        super().__init__(inputs, weights)
+        super().__init__(inputs, weights, center)
         
         if isinstance(attributes["temporal"],np.ndarray):
                 self.temporal = attributes["temporal"]
@@ -224,12 +227,12 @@ class GanglionCell(Element):
 
 class Delay(Element):
     
-    def __init__(self, inputs, weights, attributes):
+    def __init__(self, inputs, weights, center, attributes):
         
         # Attributes can contain:
         # t_delay : time delay the element introduces
         
-        super().__init__(inputs, weights)
+        super().__init__(inputs, weights, center)
         # convert time to count
         self.delay = int(np.round(attributes["t_delay"]/temporal_res))
     
@@ -252,9 +255,9 @@ class PresynapticSilencer(Element):
     # Used so that amacrine cells can silence bipolar cells before reaching
     # cells. Necessary component for OMS cells
     
-    def __init__(self, inputs, weights, attributes):
+    def __init__(self, inputs, weights, center, attributes):
         
-        super().__init__(inputs, weights)
+        super().__init__(inputs, weights, center)
             
     def out(self):
         
@@ -270,7 +273,7 @@ class PresynapticSilencer(Element):
 ###############################################################################
 
 
-def Spatial(attributes):
+def Spatial(center,attributes):
     # Define spatial receptive fields. Options:
     #    difference of gaussians: "spatial" should be "DoG", other parameters
     #    needed in "attributes": "width", "center", "on_off_ratio"
@@ -279,7 +282,7 @@ def Spatial(attributes):
     global image_size, pixel
     
     if np.array_equal(attributes["spatial"],'DoG'):
-        spatial = DoG(attributes["width"],attributes["on_off_ratio"],attributes["center"],image_size,pixel)
+        spatial = DoG(attributes["width"],attributes["on_off_ratio"],center,image_size,pixel)
         
     return spatial
 
