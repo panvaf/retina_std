@@ -24,18 +24,42 @@ def network_init(structs,size):
         neuron_list = [[None]*value]*value
         x = np.linspace(1, img_size[0]-1, value)
         y = np.linspace(1, img_size[1]-1, value)
-        XX, YY = np.meshgrid(x, y)
+        XX, YY = np.meshgrid(x, y);
         
         struct = structs[key]
         
         for i in range(value):
             for j in range(value):
                 
+                # counter used to delete connections if at the edge of the image
+                counter = 0
                 # Build connections of this neuron
-                center = [XX[i,j],YY[i,j]]
+                center = np.asarray([XX[i,j],YY[i,j]])
+                inputs = []
                 
                 # Parse through different cell types to find appropriate cells,
                 # using the size of their grid
+                
+                # need to create a different procedure for bipolar cells, which
+                # have only the image as an input
+                for input_type in struct["inputs"]:
+                    
+                    connectivity = struct["connectivity"][input_type]
+                    temp = center*size[input_type]/value; corr_center = temp.astype(int)
+                    
+                    for coords in connectivity:
+                        
+                        input_coords = corr_center + coords
+                        
+                        if all(0 < input_coords < size[input_type]):
+                            
+                            inputs.append(neurons[input_type][input_coords[0]][input_coords[1]])
+                            
+                        else:
+                            
+                            # delete corresponding weight etc to not mess up everything
+                            
+                
                 
                 # If a certain neuron not found, abort the corresponding weight
                 
