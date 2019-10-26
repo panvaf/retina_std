@@ -3,11 +3,10 @@ Set up and manipulate networks of retinal cells.
 """
 
 from classes import *
-from types import *
 import numpy as np
 
 
-def network_init(structs,size):
+def network_init(structs,size,classes):
     # Initializes overlapping  2-D cell sheets and sets up their connectivity
     # according to local profiles of connectivity specified in every neuron
     
@@ -17,15 +16,17 @@ def network_init(structs,size):
     
     global image_size, pixel
     img_size = [round(image_size[0]/pixel),round(image_size[1]/pixel)]
-    neurons = {}
-    celltypes = ['BipolarCell','AmacrineCell','GanglionCell','Delay','PresynapticSilencer']
+    cells = {}
     
     for key, value in size.items():
         
-        for temp in celltypes:
+        # find what kind of cells to create
+        celltype = 0
+        for temp in classes.keys():
                     if temp in key:
                         celltype = temp
                         
+        # initialize 2-D grid of cells
         neuron_list = [[None]*value]*value
         x = np.linspace(1, img_size[0]-1, value)
         y = np.linspace(1, img_size[1]-1, value)
@@ -33,12 +34,13 @@ def network_init(structs,size):
         
         struct = structs[key]
         
+        # create one cell at a time
         for i in range(value):
             for j in range(value):
                 
                 # counter used to delete connections if at the edge of the image
                 counter = 0
-                weights = struct["weigths"]
+                weights = struct["weights"]
                 attributes = struct["attributes"]
                 # Build connections of this neuron
                 center = np.asarray([XX[i,j],YY[i,j]])
@@ -53,21 +55,26 @@ def network_init(structs,size):
                     
                     for input_type in struct["inputs"]:
                         
+                        # find corresponding coordinates of this cell in the 2-D
+                        # grid of another cell type
                         connectivity = struct["connectivity"][input_type]
                         temp = center*size[input_type]/value; corr_center = temp.astype(int)
                         
+                        # find absolute coordinates of each cell connecting to this cell
+                        # by using relative coordinates around corr_center
                         for coords in connectivity:
                             
                             input_coords = corr_center + coords
                             
-                            if all(0 < input_coords < size[input_type]):
+                            if ((0 < input_coords) & (input_coords < size[input_type])).all():
                                 
-                                inputs.append(neurons[input_type][input_coords[0]][input_coords[1]])
+                                inputs.append(cells[input_type][input_coords[0]][input_coords[1]])
                                 
                             else:
                                 # If coordinates point out of grid:
                                 # delete corresponding weight etc to not mess up everything
                                 # also delete corresponding coeffs, duration and temporal arguments
+                                print(celltype)
                                 weights = np.delete(weights,counter)
                                 del attributes["temporal"][counter]
                                 del attributes["duration"][counter]
@@ -75,10 +82,10 @@ def network_init(structs,size):
                                 # arrays now are one element shorter
                                 counter = counter - 1
                                 
-                        counter = counter + 1
+                            counter = counter + 1
                         
-                neuron_list[i][j] = celltype(inputs,weights,center,attributes)
+                neuron_list[i][j] = classes[celltype](inputs,weights,center,attributes)
                     
-        neurons[key] = neuron_list
+        cells[key] = neuron_list
     
-    return neurons
+    return cells

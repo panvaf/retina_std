@@ -33,7 +33,7 @@ class Element:
         # output and use it is the output method
         self.inputs = inputs
         # Needed to compute which elements to connect to this element
-        self.cemter = center
+        self.center = center
         
         # preallocate matrix of activity for this cell
         self.output = np.nan

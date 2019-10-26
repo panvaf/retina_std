@@ -3,9 +3,15 @@ Create and run networks for testing.
 """
 
 from classes import * # necessary to import object classes
+from celltypes import *
 import numpy as np
+import network as net
 
 image = np.zeros((round(image_size[0]/pixel),round(image_size[1]/pixel),100))
+
+###############################################################################
+
+# Checking if elements are working fine
 
 BipolarStruct = {"inputs":[image], "weights": np.array([1]), "center": [0, 0], "attributes":
     {'type': 'On', 'separable': True, 'spatial': 'DoG', 'width': [10, 20], 'on_off_ratio': 3, 'temporal': 'stretched_sin',
@@ -41,3 +47,15 @@ SilencerStruct = {"inputs":[Amacrine,Bipolars[6]],"weights": np.array([-1,1]), "
 Silencer = PresynapticSilencer(SilencerStruct["inputs"],SilencerStruct["weights"],[0, 0],SilencerStruct["attributes"])
 
 b = Silencer.out()
+
+###############################################################################
+
+# Checking if the network is initialized correctly
+
+structs = {'BipolarCellTemplate':BipolarCellTemplate, 'AmacrineCellTemplate':AmacrineCellTemplate}
+size = {'BipolarCellTemplate': 100, 'AmacrineCellTemplate':30}
+classes = {'BipolarCell':BipolarCell,'AmacrineCell':AmacrineCell,'GanglionCell':GanglionCell,'Delay':Delay,'PresynapticSilencer':PresynapticSilencer}
+
+cells = net.network_init(structs,size,classes)
+
+###############################################################################
