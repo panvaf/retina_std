@@ -102,7 +102,7 @@ class BipolarCell(Element):
         else:
             # the first element of the list 'inputs' should contain the image
             temp = signal.fftconvolve(self.inputs[0],self.spatiotemporal,'same',axes = 2)
-            self.output = activation(temp,self.activation,self.threshold)
+            self.output = activation(np.sum(temp,axis = (0,1)),self.activation,self.threshold)
         
         return self.output
     
@@ -133,6 +133,11 @@ class AmacrineCell(Element):
         self.activation = attributes["activation"]
         self.threshold = attributes["threshold"]
         
+        if "recurrent" in attributes:
+            self.recurrent = attributes["recurrent"]
+        else:
+            self.recurrent = np.nan
+        
     def out(self):
         # Amacrine cells receive recurrent connections
 
@@ -143,14 +148,25 @@ class AmacrineCell(Element):
             values = np.asarray(list(map(lambda x: x.out(),self.inputs)))
             
             for i in range(self.n_in):
-                # Special temporal receptive field for each input
-                # Change shape of temporal to convolve
-                temp = self.temporal[i][np.newaxis,:]; temp = temp[np.newaxis,:]
-                values[i,:] = signal.fftconvolve(values[i,:],temp,'same',axes=2)
+                # Different temporal receptive field for each input
+                values[i,:] = signal.fftconvolve(values[i,:],self.temporal[i],'same')
                 
             # Use transpose to do multiplication with np.dot
             temp = np.dot(values.transpose(),self.w).transpose()
-            self.output = activation(temp,self.activation,self.threshold)
+            
+            try: 
+                if np.isnan(self.recurrent):
+                    self.output = activation(temp,self.activation,self.threshold)
+            except:
+                time_p = np.size(temp,0); l = np.size(self.recurrent)
+                self.output = np.zeros((time_p,))
+                
+                for t in range(time_p):
+                    if t < l:
+                        self.output[t] = activation(temp[t],self.activation,self.threshold)
+                    else:
+                        temp[t] = temp[t] + np.dot(self.output[t-l:t],self.recurrent)
+                        self.output[t] = activation(temp[t],self.activation,self.threshold)
         
         return self.output
 
@@ -199,18 +215,17 @@ class GanglionCell(Element):
             values = np.asarray(list(map(lambda x: x.out(),self.inputs)))
             
             for i in range(self.n_in):
-                # Special temporal receptive field for each input
-                # Change shape of temporal to convolve
-                temp = self.temporal[i][np.newaxis,:]; temp = temp[np.newaxis,:]
-                values[i,:] = signal.fftconvolve(values[i,:],temp,'same',axes=2)
+                # Different temporal receptive field for each input
+                values[i,:] = signal.fftconvolve(values[i,:],self.temporal[i],'same')
         
             # Use transpose to do multiplication with np.dot
             temp = np.dot(values.transpose(),self.w).transpose()
             
-            if np.isnan(self.recurrent):
-                self.output = activation(temp,self.activation,self.threshold)
-            else:
-                time_p = np.size(temp,2); l = np.size(self.recurrent)
+            try: 
+                if np.isnan(self.recurrent):
+                    self.output = activation(temp,self.activation,self.threshold)
+            except:
+                time_p = np.size(temp,0); l = np.size(self.recurrent)
                 self.output = np.zeros((time_p,))
                 
                 for t in range(time_p):
@@ -389,7 +404,12 @@ def activation(h,function,threshold):
 
 def relu(h,threshold,gain = 1):
     # could define gain for each cell
-    out = h-threshold; out[out<0] = 0
+    out = h-threshold; 
+    if np.isscalar(out): 
+        if out<0: 
+            out = 0 
+    else: 
+        out[out<0] = 0
     return gain*out
 
 def sigmoid(h,threshold,k=.5,b=5,s=1):

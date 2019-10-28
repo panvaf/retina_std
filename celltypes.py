@@ -10,14 +10,15 @@ to produce the appropriate connectivity in overlapping 2-D sheets of cells.
 import numpy as np
 from classes import *
 
-# note: width should be in um and then transformed to pixel values in the code.
-# Otherwise there is no generality
+# note: width should be in um in the structs and then transformed to pixel values
+# later in the script. All inputs to the network functions and to the classes
+# should be normalised in units of pixels and temporal res. Then one only need to
+# multiply with those quantities to revert back to physical dimensions
 
-img_size = (image_size/pixel).astype(int)
 image = np.zeros((img_size[0],img_size[1],100))
 
 BipolarCellTemplate = {"inputs":[image], "connectivity": [], "weights": np.array([1]), "attributes":
-    {'type': 'On', 'separable': True, 'spatial': 'DoG', 'width': [10, 20],
+    {'type': 'On', 'separable': True, 'spatial': 'DoG', 'width': np.array([10, 20]),
      'on_off_ratio': 3, 'temporal': 'stretched_sin', 'duration': 10,
      'coeffs': [1, -0.3, 0.1], 'activation': 'relu', 'threshold': 0}}
 
@@ -27,4 +28,6 @@ BipolarCellTemplate = {"inputs":[image], "connectivity": [], "weights": np.array
 AmacrineCellTemplate = {"inputs":['BipolarCellTemplate'], "connectivity": {'BipolarCellTemplate':
     [(-1,-1),(-1,0),(-1,1),(0,-1),(0,0),(0,1),(1,-1),(1,0),(1,1)]},
     "weights": np.array([1]*9), "attributes": {'temporal': ['stretched_sin']*9,'duration': [1]*9,
-    'coeffs': [[1]]*9, 'activation': 'relu','threshold': 0, 'recurrent': [1, -0.2]}}
+    'coeffs': [[1]]*9, 'activation': 'relu','threshold': 0}}
+    
+BipolarCellTemplate["attributes"]['width'] = BipolarCellTemplate["attributes"]['width']/pixel

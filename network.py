@@ -15,8 +15,7 @@ def network_init(structs,size,classes):
     # size contains the number of cells in one dimension (Square 2-D sheets are created)
     # precedence should be given to upstream cells when setting up this dictionary
     
-    global image_size, pixel
-    img_size = (image_size/pixel).astype(int)
+    global img_size
     cells = {}
     
     for key, value in size.items():

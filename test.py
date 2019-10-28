@@ -7,7 +7,6 @@ from celltypes import *
 import numpy as np
 import network as net
 
-img_size = (image_size/pixel).astype(int)
 image = np.zeros((img_size[0],img_size[1],100))
 
 ###############################################################################
@@ -58,5 +57,9 @@ size = {'BipolarCellTemplate': 20, 'AmacrineCellTemplate':10}
 classes = {'BipolarCell':BipolarCell,'AmacrineCell':AmacrineCell,'GanglionCell':GanglionCell,'Delay':Delay,'PresynapticSilencer':PresynapticSilencer}
 
 cells = net.network_init(structs,size,classes)
+
+for l in cells['AmacrineCellTemplate']: 
+    for cell in l: 
+        cell.out()
 
 ###############################################################################
