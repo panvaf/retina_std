@@ -4,6 +4,7 @@ Set up and manipulate networks of retinal cells.
 
 from classes import *
 import numpy as np
+import copy as cp
 
 
 def network_init(structs,size,classes):
@@ -15,7 +16,7 @@ def network_init(structs,size,classes):
     # precedence should be given to upstream cells when setting up this dictionary
     
     global image_size, pixel
-    img_size = [round(image_size[0]/pixel),round(image_size[1]/pixel)]
+    img_size = (image_size/pixel).astype(int)
     cells = {}
     
     for key, value in size.items():
@@ -27,10 +28,9 @@ def network_init(structs,size,classes):
                         celltype = temp
                         
         # initialize 2-D grid of cells
-        neuron_list = [[None]*value]*value
+        neuron_list = [[None]*value for i in range(value)]
         x = np.linspace(1, img_size[0]-1, value)
         y = np.linspace(1, img_size[1]-1, value)
-        XX, YY = np.meshgrid(x, y);
         
         struct = structs[key]
         
@@ -41,9 +41,9 @@ def network_init(structs,size,classes):
                 # counter used to delete connections if at the edge of the image
                 counter = 0
                 weights = struct["weights"]
-                attributes = struct["attributes"]
+                attributes = cp.deepcopy(struct["attributes"])
                 # Build connections of this neuron
-                center = np.asarray([XX[i,j],YY[i,j]])
+                center = np.asarray([x[i],y[j]])
                 inputs = []
                 
                 # Parse through different cell types to find appropriate cells,
@@ -58,7 +58,7 @@ def network_init(structs,size,classes):
                         # find corresponding coordinates of this cell in the 2-D
                         # grid of another cell type
                         connectivity = struct["connectivity"][input_type]
-                        temp = center*size[input_type]/value; corr_center = temp.astype(int)
+                        temp = np.divide(center,img_size)*size[input_type]; corr_center = temp.astype(int)
                         
                         # find absolute coordinates of each cell connecting to this cell
                         # by using relative coordinates around corr_center
@@ -74,7 +74,6 @@ def network_init(structs,size,classes):
                                 # If coordinates point out of grid:
                                 # delete corresponding weight etc to not mess up everything
                                 # also delete corresponding coeffs, duration and temporal arguments
-                                print(celltype)
                                 weights = np.delete(weights,counter)
                                 del attributes["temporal"][counter]
                                 del attributes["duration"][counter]

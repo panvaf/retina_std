@@ -8,8 +8,9 @@ from scipy import signal
 import copy as cp
 
 # Global variables
-image_size = [200, 200]      # in um
+image_size = np.array([200, 200])      # in um
 pixel = 5                    # in um
+img_size = (image_size/pixel).astype(int)  # number
 temporal_res = .1            # in msec
 t_time = 100                 # in sec
 
@@ -279,21 +280,21 @@ def Spatial(center,attributes):
     #    needed in "attributes": "width", "center", "on_off_ratio"
     
     # Access global variables used throughout
-    global image_size, pixel
+    global img_size
     
     if np.array_equal(attributes["spatial"],'DoG'):
-        spatial = DoG(attributes["width"],attributes["on_off_ratio"],center,image_size,pixel)
+        spatial = DoG(attributes["width"],attributes["on_off_ratio"],center,img_size)
         
     return spatial
 
 
-def DoG(sigmas,ratio,center,image_size,pixel):
+def DoG(sigmas,ratio,center,img_size):
     # Sigmas contain the standard deviations the positive (center) and negative
     # (surround) part. To invert the parts. use argument "type" in attributes
     # Ratio is the ratio of the peaks of the gaussians (center/surround)
     
-    x = np.arange(0,image_size[0],pixel)
-    y = np.arange(0,image_size[1],pixel)
+    x = np.arange(0,img_size[0])
+    y = np.arange(0,img_size[1])
     X, Y = np.meshgrid(x,y)
     
     norm_dist1 = 1/2*(((X-center[0])**2+(Y-center[1])**2)/sigmas[0]**2)

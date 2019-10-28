@@ -10,7 +10,11 @@ to produce the appropriate connectivity in overlapping 2-D sheets of cells.
 import numpy as np
 from classes import *
 
-image = np.zeros((round(image_size[0]/pixel),round(image_size[1]/pixel),100))
+# note: width should be in um and then transformed to pixel values in the code.
+# Otherwise there is no generality
+
+img_size = (image_size/pixel).astype(int)
+image = np.zeros((img_size[0],img_size[1],100))
 
 BipolarCellTemplate = {"inputs":[image], "connectivity": [], "weights": np.array([1]), "attributes":
     {'type': 'On', 'separable': True, 'spatial': 'DoG', 'width': [10, 20],
