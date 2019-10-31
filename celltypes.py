@@ -11,7 +11,8 @@ import numpy as np
 from classes import *
 
 # note: width should be in um in the structs and then transformed to pixel values
-# later in the script. All inputs to the network functions and to the classes
+# later in the script. similarly, duration should be in ms and then transformed to
+# units of temporal res. All inputs to the network functions and to the classes
 # should be normalised in units of pixels and temporal res. Then one only need to
 # multiply with those quantities to revert back to physical dimensions
 
@@ -31,3 +32,5 @@ AmacrineCellTemplate = {"inputs":['BipolarCellTemplate'], "connectivity": {'Bipo
     'coeffs': [[1]]*9, 'activation': 'relu','threshold': 0}}
     
 BipolarCellTemplate["attributes"]['width'] = BipolarCellTemplate["attributes"]['width']/pixel
+BipolarCellTemplate["attributes"]['duration'] = BipolarCellTemplate["attributes"]['duration']/temporal_res
+AmacrineCellTemplate["attributes"]['duration'] = [dur/temporal_res for dur in AmacrineCellTemplate["attributes"]['duration']]
