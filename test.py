@@ -52,13 +52,13 @@ b = Silencer.out()
 
 # Checking if the network is initialized correctly
 
-structs = {'BipolarCellTemplate':BipolarCellTemplate, 'AmacrineCellTemplate':AmacrineCellTemplate}
-size = {'BipolarCellTemplate': 20, 'AmacrineCellTemplate':10}
+structs = {'BipolarCell2':BipolarCell2, 'AmacrineCellOffS':AmacrineCellOffS}
+size = {'BipolarCell2': 20, 'AmacrineCellOffS':10}
 classes = {'BipolarCell':BipolarCell,'AmacrineCell':AmacrineCell,'GanglionCell':GanglionCell,'Delay':Delay,'PresynapticSilencer':PresynapticSilencer}
 
 cells = net.network_init(structs,size,classes)
 
-for l in cells['AmacrineCellTemplate']: 
+for l in cells['AmacrineCellOffS']: 
     for cell in l: 
         cell.out()
 

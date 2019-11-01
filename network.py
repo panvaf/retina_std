@@ -56,7 +56,11 @@ def network_init(structs,size,classes):
                         
                         # find corresponding coordinates of this cell in the 2-D
                         # grid of another cell type
-                        connectivity = struct["connectivity"][input_type]
+                        try: 
+                            connectivity = struct["connectivity"][input_type]
+                        except:
+                            continue
+                        
                         temp = np.divide(center,img_size)*size[input_type]; corr_center = temp.astype(int)
                         
                         # find absolute coordinates of each cell connecting to this cell
