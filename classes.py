@@ -11,7 +11,7 @@ import copy as cp
 image_size = np.array([200, 200])      # in um
 pixel = 5                    # in um
 img_size = (image_size/pixel).astype(int)  # number
-temporal_res = .1            # in msec
+temporal_res = 2            # in msec
 t_time = 100                 # in sec
 
 ###############################################################################

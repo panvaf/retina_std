@@ -52,13 +52,30 @@ b = Silencer.out()
 
 # Checking if the network is initialized correctly
 
-structs = {'BipolarCell2':BipolarCell2, 'AmacrineCellOffS':AmacrineCellOffS}
-size = {'BipolarCell2': 20, 'AmacrineCellOffS':10}
+structs = {'BipolarCell1':BipolarCell1, 'BipolarCell2':BipolarCell2, 'BipolarCell3a':BipolarCell3a,
+           'BipolarCell3b':BipolarCell3b, 'BipolarCell4':BipolarCell4, 'BipolarCell5A':BipolarCell5A,
+           'BipolarCell5R':BipolarCell5R, 'BipolarCell5X':BipolarCell5X, 'BipolarCellX':BipolarCellX, 
+           'BipolarCell6':BipolarCell6, 'BipolarCell7':BipolarCell7, 'BipolarCell8':BipolarCell8, 
+           'BipolarCell9':BipolarCell9, 'BipolarCellR':BipolarCellR, 'AmacrineCellOffS':AmacrineCellOffS, 
+           'AmacrineCellOnS':AmacrineCellOnS, 'AmacrineCellWidefield':AmacrineCellWidefield, 'AmacrineCellAII':AmacrineCellAII, 'AmacrineCell1': AmacrineCell1,
+           'GanglionCellsOFFa':GanglionCellsOFFa, 'GanglionCellFminiOFF':GanglionCellFminiOFF, 'GanglionCellFmidiOFF':GanglionCellFmidiOFF, 
+           'GanglionCellPV5':GanglionCellPV5, 'GanglionCellooDS37c':GanglionCellooDS37c, 'GanglionCellooDS37d':GanglionCellooDS37d, 
+           'GanglionCellooDS37r':GanglionCellooDS37r, 'GanglionCellooDS37v':GanglionCellooDS37v, 'GanglionCellW3':GanglionCellW3,
+           'GanglionCellsONa':GanglionCellsONa, 'GanglionCellFminiON':GanglionCellFminiON, 'GanglionCellFmidiON':GanglionCellFmidiON, 
+           'GanglionCelltONa':GanglionCelltONa, 'GanglionCellsOnDS7id':GanglionCellsOnDS7id, 'GanglionCellsOnDS7ir':GanglionCellsOnDS7ir, 
+           'GanglionCellsOnDS7iv':GanglionCellsOnDS7iv, 'GanglionCelltOnDS7o':GanglionCelltOnDS7o}
+
+size = {'BipolarCell1':20,'BipolarCell2':20,'BipolarCell3a':20,'BipolarCell3b':20,
+        'BipolarCell4':20,'BipolarCell5A':20,'BipolarCell5R':20,'BipolarCell5X':20,
+        'BipolarCellX':20,'BipolarCell6':20,'BipolarCell7':20,'BipolarCell8':20, 
+        'BipolarCell9':20,'BipolarCellR':20,'AmacrineCellAII':20,'AmacrineCell1':3,
+        'GanglionCellPV5':3}
+
 classes = {'BipolarCell':BipolarCell,'AmacrineCell':AmacrineCell,'GanglionCell':GanglionCell,'Delay':Delay,'PresynapticSilencer':PresynapticSilencer}
 
 cells = net.network_init(structs,size,classes)
 
-for l in cells['AmacrineCellOffS']: 
+for l in cells['GanglionCellPV5']: 
     for cell in l: 
         cell.out()
 
