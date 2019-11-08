@@ -65,6 +65,7 @@ structs = {'BipolarCell1':BipolarCell1, 'BipolarCell2':BipolarCell2, 'BipolarCel
            'GanglionCelltONa':GanglionCelltONa, 'GanglionCellsOnDS7id':GanglionCellsOnDS7id, 'GanglionCellsOnDS7ir':GanglionCellsOnDS7ir, 
            'GanglionCellsOnDS7iv':GanglionCellsOnDS7iv, 'GanglionCelltOnDS7o':GanglionCelltOnDS7o}
 
+
 size = {'BipolarCell1':20,'BipolarCell2':20,'BipolarCell3a':20,'BipolarCell3b':20,
         'BipolarCell4':20,'BipolarCell5A':20,'BipolarCell5R':20,'BipolarCell5X':20,
         'BipolarCellX':20,'BipolarCell6':20,'BipolarCell7':20,'BipolarCell8':20, 

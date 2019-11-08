@@ -61,7 +61,7 @@ def network_init(structs,size,classes):
                         except:
                             continue
                         
-                        temp = np.divide(center,img_size)*size[input_type]; corr_center = temp.astype(int)
+                        temp = np.divide(center*size[input_type],img_size); corr_center = temp.astype(int)
                         
                         # find absolute coordinates of each cell connecting to this cell
                         # by using relative coordinates around corr_center
@@ -69,7 +69,7 @@ def network_init(structs,size,classes):
                             
                             input_coords = corr_center + coords
                             
-                            if ((0 < input_coords) & (input_coords < size[input_type])).all():
+                            if ((0 <= input_coords) & (input_coords < size[input_type])).all():
                                 
                                 inputs.append(cells[input_type][input_coords[0]][input_coords[1]])
                                 

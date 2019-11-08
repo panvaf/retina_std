@@ -154,7 +154,7 @@ BipolarCell4TOGanglionCellPV5 = [(-3,0,.5),(-2,0,.5),(-1,0,.5),(0,0,.5),(1,0,.5)
 temp =  list(zip(*BipolarCell4TOGanglionCellPV5))
 BipolarCell4TOGanglionCellPV5w = temp[2]; BipolarCell4TOGanglionCellPV5conn = list(zip(temp[0],temp[1]))
 
-AmacrineCellAIITOGanglionCellPV5 = [(-3,0,20),(-2,0,20),(-1,0,20),(0,0,20),(1,0,20),(2,0,20),(3,0,20),(4,0,20)]
+AmacrineCellAIITOGanglionCellPV5 = [(-3,0,-20),(-2,0,-20),(-1,0,-20),(0,0,-20),(1,0,-20),(2,0,-20),(3,0,-20),(4,0,-20)]
 temp =  list(zip(*AmacrineCellAIITOGanglionCellPV5))
 AmacrineCellAIITOGanglionCellPV5w = temp[2]; AmacrineCellAIITOGanglionCellPV5conn = list(zip(temp[0],temp[1]))
         

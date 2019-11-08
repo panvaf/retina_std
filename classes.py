@@ -210,22 +210,22 @@ class GanglionCell(Element):
         if not np.any(np.isnan(self.output)):
             pass
         else:
-            # care must be taken that the length of all arrays is equal. So to it
+            # care must be taken that the length of all arrays is equal. So do it
             # for values, after this it is ok
             values = np.asarray(list(map(lambda x: x.out(),self.inputs)))
             
             for i in range(self.n_in):
                 # Different temporal receptive field for each input
                 values[i,:] = signal.fftconvolve(values[i,:],self.temporal[i],'same')
-        
+    
             # Use transpose to do multiplication with np.dot
             temp = np.dot(values.transpose(),self.w).transpose()
-            
+                        
             try: 
                 if np.isnan(self.recurrent):
                     self.output = activation(temp,self.activation,self.threshold)
             except:
-                time_p = np.size(temp,0); l = np.size(self.recurrent)
+                time_p = np.size(temp); l = np.size(self.recurrent)
                 self.output = np.zeros((time_p,))
                 
                 for t in range(time_p):
