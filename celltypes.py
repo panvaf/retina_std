@@ -21,6 +21,7 @@ from scipy.io import loadmat
 # and order element types are read in connectivity is determined in inputs
 
 image = np.zeros((img_size[0],img_size[1],100))
+# there are also separate receptive fields of center and surround
 BipolarTemporals = loadmat('C:\\Users\\user\\Documents\\CNS\\1st Rotation\\data\\pantelis_bip_filters.mat')
 BipolarTemporals = BipolarTemporals['pantelis_bip_filters']
 PV5recurrent = loadmat('C:\\Users\\user\\Documents\\CNS\\1st Rotation\\data\\gc_fdbk_filt.mat')
@@ -134,11 +135,19 @@ AmacrineCell1 = {"inputs":['BipolarCell1','BipolarCell2','BipolarCell3a','Bipola
 ###############################################################################
     
 # Ganglion cells
-    
-GanglionCellsOFFa = {"inputs":['BipolarCell1','BipolarCell2','AmacrineCellAII'], "connectivity": {'BipolarCell1':
-    [(-1,-1),(-1,0),(-1,1),(0,-1),(0,0),(0,1),(1,-1),(1,0),(1,1)]},
-    "weights": np.array([1]*9), "attributes": {'temporal': ['stretched_sin']*9,'duration': [1]*9,
-    'coeffs': [[1]]*9, 'activation': 'relu','threshold': 0, 'recurrent': [1, -0.2]}}
+
+phenom_rec_field = np.array([250,250])
+n_amII = (phenom_rec_field/BipolarCell6['attributes']['width']).astype(int)  # using bipolar because 
+AmacrineCellIITOGanglionCellsOFFa = [(int(x-round(n_amII[0]/2)),int(y-round(n_amII[1]/2)),-1) for x in range(n_amII[0]) for y in range(n_amII[1])]
+temp =  list(zip(*AmacrineCellIITOGanglionCellsOFFa))
+AmacrineCellIITOGanglionCellsOFFaw = temp[2]; AmacrineCellIITOGanglionCellsOFFaconn = list(zip(temp[0],temp[1]))
+total_n = len(AmacrineCellIITOGanglionCellsOFFaconn)
+
+GanglionCellsOFFa = {"inputs":['BipolarCell1','BipolarCell2','AmacrineCellAII'],
+    "connectivity": {'AmacrineCellAII':AmacrineCellIITOGanglionCellsOFFaconn},
+    "weights": np.array(AmacrineCellIITOGanglionCellsOFFaw), "attributes":
+    {'temporal': ['stretched_sin']*total_n,'duration': [1]*total_n,
+    'coeffs': [[1]]*total_n, 'activation': 'relu','threshold': 0, 'recurrent': [1, -0.2]}}
 
 GanglionCellFminiOFF = {"inputs":['BipolarCell1','BipolarCell2','AmacrineCellAII'], "connectivity": {'BipolarCell1':
     [(-1,-1),(-1,0),(-1,1),(0,-1),(0,0),(0,1),(1,-1),(1,0),(1,1)]},
@@ -203,7 +212,7 @@ GanglionCellW3 = {"inputs":['BipolarCell3a','BipolarCell3b','BipolarCell4','Bipo
 
 phenom_rec_field = np.array([250,250])
 n_bip6 = (phenom_rec_field/BipolarCell6['attributes']['width']).astype(int)
-BipolarCell6TOGanglionCellsONa = [(int(x-round(n_bip6[0]/2)),int(y-round(n_bip6[1]/2)),.5) for x in range(n_bip6[0]) for y in range(n_bip6[1])]
+BipolarCell6TOGanglionCellsONa = [(int(x-round(n_bip6[0]/2)),int(y-round(n_bip6[1]/2)),Gaussian(x-n_bip6[0]/2,y-n_bip6[1]/2,n_bip6[0]/3,n_bip6[1]/3,.5)) for x in range(n_bip6[0]) for y in range(n_bip6[1])]
 temp =  list(zip(*BipolarCell6TOGanglionCellsONa))
 BipolarCell6TOGanglionCellsONaw = temp[2]; BipolarCell6TOGanglionCellsONaconn = list(zip(temp[0],temp[1]))
 total_n = len(BipolarCell6TOGanglionCellsONaconn)
@@ -226,10 +235,12 @@ GanglionCellFmidiON = {"inputs":['BipolarCell5A','BipolarCell5R','BipolarCell5X'
     "weights": np.array([1]*9), "attributes": {'temporal': ['stretched_sin']*9,'duration': [1]*9,
     'coeffs': [[1]]*9, 'activation': 'relu','threshold': 0, 'recurrent': [1, -0.2]}}
 
+# Bipolar5 was split to 3 categories, and we do not know which connects here. 
+# It does not make much of a difference though in terms of receptive fields.
     
 phenom_rec_field = np.array([200,200])
-n_bip5 = (phenom_rec_field/BipolarCell5A['attributes']['width']).astype(int)
-BipolarCell5ATOGanglionCelltONa = [(int(x-round(n_bip5[0]/2)),int(y-round(n_bip5[1]/2)),.5) for x in range(n_bip5[0]) for y in range(n_bip5[1])]
+n_bip5A = (phenom_rec_field/BipolarCell5A['attributes']['width']).astype(int)
+BipolarCell5ATOGanglionCelltONa = [(int(x-round(n_bip5A[0]/2)),int(y-round(n_bip5A[1]/2)),Gaussian(x-n_bip5A[0]/2,y-n_bip5A[1]/2,n_bip5A[0]/3,n_bip5A[1]/3,.5)) for x in range(n_bip5A[0]) for y in range(n_bip5A[1])]
 temp =  list(zip(*BipolarCell5ATOGanglionCelltONa))
 BipolarCell5ATOGanglionCelltONaw = temp[2]; BipolarCell5ATOGanglionCelltONaconn = list(zip(temp[0],temp[1]))
 total_n = len(BipolarCell5ATOGanglionCelltONaconn)

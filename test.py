@@ -66,11 +66,8 @@ structs = {'BipolarCell1':BipolarCell1, 'BipolarCell2':BipolarCell2, 'BipolarCel
            'GanglionCellsOnDS7iv':GanglionCellsOnDS7iv, 'GanglionCelltOnDS7o':GanglionCelltOnDS7o}
 
 
-size = {'BipolarCell1':20,'BipolarCell2':20,'BipolarCell3a':20,'BipolarCell3b':20,
-        'BipolarCell4':20,'BipolarCell5A':20,'BipolarCell5R':20,'BipolarCell5X':20,
-        'BipolarCellX':20,'BipolarCell6':20,'BipolarCell7':20,'BipolarCell8':20, 
-        'BipolarCell9':20,'BipolarCellR':20,'AmacrineCellAII':20,'AmacrineCell1':3,
-        'GanglionCellPV5':3}
+size = {'BipolarCell4':10,'BipolarCell5A':10,'BipolarCell6':10,'AmacrineCellAII':10,
+        'GanglionCellPV5':1,'GanglionCellsOFFa':1,'GanglionCellsONa':1,'GanglionCellsONa':1}
 
 classes = {'BipolarCell':BipolarCell,'AmacrineCell':AmacrineCell,'GanglionCell':GanglionCell,'Delay':Delay,'PresynapticSilencer':PresynapticSilencer}
 

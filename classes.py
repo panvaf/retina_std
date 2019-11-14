@@ -318,8 +318,11 @@ def DoG(sigmas,ratio,center,img_size):
     gauss2 = 1/(2*np.pi*sigmas[1]**2)*np.exp(-norm_dist2)
     # Normalization? Should it not be zero sum? (no reaction to constant input)
     
-    return (gauss1 - gauss2)/(1+ratio) 
+    return (gauss1 - gauss2)/(1+ratio)
 
+def Gaussian(x,y,sigmax,sigmay,peak):
+    norm_dist = 1/2*(x**2/sigmax**2+y**2/sigmay**2)
+    return peak*np.exp(-norm_dist)
 
 ###############################################################################
 
