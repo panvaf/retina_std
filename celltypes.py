@@ -143,6 +143,8 @@ temp =  list(zip(*AmacrineCellIITOGanglionCellsOFFa))
 AmacrineCellIITOGanglionCellsOFFaw = temp[2]; AmacrineCellIITOGanglionCellsOFFaconn = list(zip(temp[0],temp[1]))
 total_n = len(AmacrineCellIITOGanglionCellsOFFaconn)
 
+# bipolar 1 and 2 are OFF cells, they could also connect directly to here
+
 GanglionCellsOFFa = {"inputs":['BipolarCell1','BipolarCell2','AmacrineCellAII'],
     "connectivity": {'AmacrineCellAII':AmacrineCellIITOGanglionCellsOFFaconn},
     "weights": np.array(AmacrineCellIITOGanglionCellsOFFaw), "attributes":
@@ -158,7 +160,7 @@ GanglionCellFmidiOFF = {"inputs":['BipolarCell1','BipolarCell2','AmacrineCellAII
     [(-1,-1),(-1,0),(-1,1),(0,-1),(0,0),(0,1),(1,-1),(1,0),(1,1)]},
     "weights": np.array([1]*9), "attributes": {'temporal': ['stretched_sin']*9,'duration': [1]*9,
     'coeffs': [[1]]*9, 'activation': 'relu','threshold': 0, 'recurrent': [1, -0.2]}}
-    
+
 BipolarCell4TOGanglionCellPV5 = [(-3,0,.5),(-2,0,.5),(-1,0,.5),(0,0,.5),(1,0,.5),(2,0,.5),(3,0,.5),(4,0,.5)]
 temp =  list(zip(*BipolarCell4TOGanglionCellPV5))
 BipolarCell4TOGanglionCellPV5w = temp[2]; BipolarCell4TOGanglionCellPV5conn = list(zip(temp[0],temp[1]))
@@ -277,35 +279,35 @@ GanglionCelltOnDS7o = {"inputs":['AmacrineCellOnS','AmacrineCellAII'], "connecti
     
 # Rescale parameters relative to time and space partitioning    
     
-BipolarCell1["attributes"]['width'] = BipolarCell1["attributes"]['width']/pixel
-BipolarCell2["attributes"]['width'] = BipolarCell2["attributes"]['width']/pixel
-BipolarCell3a["attributes"]['width'] = BipolarCell3a["attributes"]['width']/pixel
-BipolarCell3b["attributes"]['width'] = BipolarCell3b["attributes"]['width']/pixel
-BipolarCell4["attributes"]['width'] = BipolarCell4["attributes"]['width']/pixel
-BipolarCell5A["attributes"]['width'] = BipolarCell5A["attributes"]['width']/pixel
-BipolarCell5R["attributes"]['width'] = BipolarCell5R["attributes"]['width']/pixel
-BipolarCell5X["attributes"]['width'] = BipolarCell5X["attributes"]['width']/pixel
-BipolarCellX["attributes"]['width'] = BipolarCellX["attributes"]['width']/pixel
-BipolarCell6["attributes"]['width'] = BipolarCell6["attributes"]['width']/pixel
-BipolarCell7["attributes"]['width'] = BipolarCell7["attributes"]['width']/pixel
-BipolarCell8["attributes"]['width'] = BipolarCell8["attributes"]['width']/pixel
-BipolarCell9["attributes"]['width'] = BipolarCell9["attributes"]['width']/pixel
-BipolarCellR["attributes"]['width'] = BipolarCellR["attributes"]['width']/pixel
+BipolarCell1["attributes"]['width'] /= pixel
+BipolarCell2["attributes"]['width'] /= pixel
+BipolarCell3a["attributes"]['width'] /= pixel
+BipolarCell3b["attributes"]['width'] /= pixel
+BipolarCell4["attributes"]['width'] /= pixel
+BipolarCell5A["attributes"]['width'] /= pixel
+BipolarCell5R["attributes"]['width'] /= pixel
+BipolarCell5X["attributes"]['width'] /= pixel
+BipolarCellX["attributes"]['width'] /= pixel
+BipolarCell6["attributes"]['width'] /= pixel
+BipolarCell7["attributes"]['width'] /= pixel
+BipolarCell8["attributes"]['width'] /= pixel
+BipolarCell9["attributes"]['width'] /= pixel
+BipolarCellR["attributes"]['width'] /= pixel
 
-# BipolarCell1["attributes"]['duration'] = BipolarCell1["attributes"]['duration']/temporal_res
-# BipolarCell2["attributes"]['duration'] = BipolarCell2["attributes"]['duration']/temporal_res
-# BipolarCell3a["attributes"]['duration'] = BipolarCell3a["attributes"]['duration']/temporal_res
-# BipolarCell3b["attributes"]['duration'] = BipolarCell3b["attributes"]['duration']/temporal_res
-# BipolarCell4["attributes"]['duration'] = BipolarCell4["attributes"]['duration']/temporal_res
-# BipolarCell5A["attributes"]['duration'] = BipolarCell5A["attributes"]['duration']/temporal_res
-# BipolarCell5R["attributes"]['duration'] = BipolarCell5R["attributes"]['duration']/temporal_res
-# BipolarCell5X["attributes"]['duration'] = BipolarCell5X["attributes"]['duration']/temporal_res
-# BipolarCellX["attributes"]['duration'] = BipolarCellX["attributes"]['duration']/temporal_res
-# BipolarCell6["attributes"]['duration'] = BipolarCell6["attributes"]['duration']/temporal_res
-# BipolarCell7["attributes"]['duration'] = BipolarCell7["attributes"]['duration']/temporal_res
-# BipolarCell8["attributes"]['duration'] = BipolarCell8["attributes"]['duration']/temporal_res
-# BipolarCell9["attributes"]['duration'] = BipolarCell9["attributes"]['duration']/temporal_res
-# BipolarCellR["attributes"]['duration'] = BipolarCellR["attributes"]['duration']/temporal_res
+# BipolarCell1["attributes"]['duration'] /= temporal_res
+# BipolarCell2["attributes"]['duration'] /= temporal_res
+# BipolarCell3a["attributes"]['duration'] /= temporal_res
+# BipolarCell3b["attributes"]['duration'] /= temporal_res
+# BipolarCell4["attributes"]['duration'] /= temporal_res
+# BipolarCell5A["attributes"]['duration'] /= temporal_res
+# BipolarCell5R["attributes"]['duration'] /= temporal_res
+# BipolarCell5X["attributes"]['duration'] /= temporal_res
+# BipolarCellX["attributes"]['duration'] /= temporal_res
+# BipolarCell6["attributes"]['duration'] /= temporal_res
+# BipolarCell7["attributes"]['duration'] /= temporal_res
+# BipolarCell8["attributes"]['duration'] /= temporal_res
+# BipolarCell9["attributes"]['duration'] /= temporal_res
+# BipolarCellR["attributes"]['duration'] /= temporal_res
 
 AmacrineCellOffS["attributes"]['duration'] = [dur/temporal_res for dur in AmacrineCellOffS["attributes"]['duration']]
 AmacrineCellOnS["attributes"]['duration'] = [dur/temporal_res for dur in AmacrineCellOnS["attributes"]['duration']]
