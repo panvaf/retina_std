@@ -31,12 +31,28 @@ def expanding_disk(pos,speed,width,exp_rate,maxwidth,amplitude,gridsize,duration
     return stim
 
 
-def moving_bars(k,f,theta,speed,contrast,gridsize,duration):
+def moving_bars(k,speed,theta,contrast,gridsize,duration):
+    # Creates artificial stimuli of moving bars. Params:
+    # k: spatial frequency of the bars, in inverse pixel values
+    # speed: amplitude and direction of moving speed
+    # theta: orientation of the bars in space in rads, 0 rads being horizontal
+    # contrast: amplitude of positive and negative amplitude of negative part
+    # gridsize: the size of the grid, in pixels
+    # duration: the temporal extent of the stimulus, in units of time
+    
+    x = np.arange(gridsize); y = np.arange(gridsize); t = np.arange(duration)
+    X, Y, T = np.meshgrid(x,y,t)
+    
+    stim = np.cos(k*X*np.cos(theta)+k*Y*np.sin(theta)-2*np.pi*speed*T)
+    
+    return contrast*np.sign(stim)
+
+
+def counterphase_grating(k,f,theta,contrast,gridsize,duration):
     # Creates artificial stimuli of moving bars. Equation 2.18 from Dayan & Abbott. Params:
     # k: spatial frequency of the bars, in inverse pixel values
     # f: temporal frequency of the bars, in inverse temporal unit values
     # theta: orientation of the bars in space in rads, 0 rads being horizontal
-    # speed: amplitude and direction of moving speed
     # contrast: amplitude of positive and negative amplitude of negative part
     # gridsize: the size of the grid, in pixels
     # duration: the temporal extent of the stimulus, in units of time
@@ -45,5 +61,23 @@ def moving_bars(k,f,theta,speed,contrast,gridsize,duration):
     X, Y, T = np.meshgrid(x,y,t)
     
     stim = contrast*np.cos(k*X*np.cos(theta)+k*Y*np.sin(theta))*np.cos(2*np.pi*f*T)
+    
+    return stim
+
+
+def flashing_disk(pos,width,amplitude,f,gridsize,duration,order=10):
+    # Creates artificial stimuli of expanding disks. Params:
+    # pos: 2 dim starting position in grid coordinates
+    # width: the initial width of the disk
+    # amplitude: peak amplitude of the disk
+    # f: frequency of flashing
+    # gridsize: the size of the grid, in pixels
+    # duration: the temporal extent of the stimulus, in units of time
+    # order: controls how sharp the transition on the margins of the disk is
+        
+    x = np.arange(gridsize); y = np.arange(gridsize); t = np.arange(duration)
+    X, Y, T = np.meshgrid(x,y,t)
+    norm_dist = ((X-pos[0])**2+(Y-pos[1])**2)/width**2
+    stim = amplitude*np.exp(-1/2*norm_dist**int(order/2))*np.cos(2*np.pi*f*T)
     
     return stim

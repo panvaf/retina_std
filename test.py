@@ -6,8 +6,9 @@ from classes import * # necessary to import object classes
 from celltypes import *
 import numpy as np
 import network as net
+import stimuli as stim
 
-image = np.zeros((img_size[0],img_size[1],100))
+image = stim.expanding_disk([100,100],[1,0],3,.3,20,1,200,100)
 
 ###############################################################################
 
