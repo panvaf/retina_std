@@ -8,7 +8,7 @@ from scipy import signal
 import copy as cp
 
 # Global variables
-image_size = np.array([200, 200])      # in um
+image_size = np.array([1000, 1000])      # in um
 pixel = 5                    # in um
 img_size = (image_size/pixel).astype(int)  # number
 temporal_res = 2            # in msec
@@ -288,6 +288,7 @@ class PresynapticSilencer(Element):
 
 ###############################################################################
 
+# Functions for spatial attributes
 
 def Spatial(center,attributes):
     # Define spatial receptive fields. Options:
@@ -326,6 +327,7 @@ def Gaussian(x,y,sigmax,sigmay,peak):
 
 ###############################################################################
 
+# Functions for temporal attributes
 
 def Temporal_multiple(attributes,n):
     # Unpacks contents of attributes and passes them one at a time to Temporal()
@@ -353,22 +355,23 @@ def Temporal(attributes):
     global temporal_res
     
     if np.array_equal(attributes["temporal"],'Adelson_Bergen'):
-        temporal = Adelson_Bergen(1/attributes["duration"],temporal_res)
+        temporal = Adelson_Bergen(attributes["duration"])
     elif np.array_equal(attributes["temporal"],'stretched_sin'):
-        temporal = stretched_sin(attributes["duration"],attributes["coeffs"],temporal_res)
+        temporal = stretched_sin(attributes["duration"],attributes["coeffs"])
         
     return temporal
 
 
-def Adelson_Bergen(alpha,step):
+def Adelson_Bergen(duration):
     # Alpha acts as an inverse time constant. Equation (2.29) from Dayan & Abbott
     
-    t = np.arange(0,20*alpha,step)
+    alpha = 20/duration
+    t = np.arange(duration)
     norm_t  = alpha*t
     
     return alpha*np.exp(-norm_t)*(norm_t**5/np.math.factorial(5)-norm_t**7/np.math.factorial(7))
 
-def stretched_sin(tf,coeffs,step):
+def stretched_sin(tf,coeffs):
     # Computes equation (5) from Keat et al 2001
     # tf is the maximal length of the filter
     # coeffs should be a numpy array with the corresponding coefficient of the
@@ -377,14 +380,14 @@ def stretched_sin(tf,coeffs,step):
     filt = 0
     
     for i in range(len(coeffs)):
-        filt = filt + coeffs[i]*stretched_sin_basis(tf,i+1,step)
+        filt = filt + coeffs[i]*stretched_sin_basis(tf,i+1)
         
     return filt
 
-def stretched_sin_basis(tf,order,step):
+def stretched_sin_basis(tf,order):
     # Equation (6) from Keat et al 2001
     
-    t = np.arange(0,tf,step)
+    t = np.arange(tf)
     norm_t  = t/tf
     
     return np.sin(np.pi*order*(2*norm_t-norm_t**2))
@@ -392,6 +395,7 @@ def stretched_sin_basis(tf,order,step):
 
 ###############################################################################
 
+# Functions for activations
 
 def activation(h,function,threshold):
     # Computes output of elements. Options:
@@ -418,3 +422,11 @@ def relu(h,threshold,gain = 1):
 def sigmoid(h,threshold,k=.5,b=5,s=1):
     # could define k, b and s separately for each cell
     return 1/(1+k*np.exp(-b*(h-threshold)))
+
+###############################################################################
+    
+# Utils
+    
+def norm(vector):
+    coeff = np.linalg.norm(vector)
+    return vector/coeff
