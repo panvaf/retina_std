@@ -351,9 +351,6 @@ def Temporal(attributes):
     #    Stretched sin: "temporal" should be "stretched_sin", other parameters
     #       needed: "duration", "coeffs"
     
-    # Access global variables used throughout
-    global temporal_res
-    
     if np.array_equal(attributes["temporal"],'Adelson_Bergen'):
         temporal = Adelson_Bergen(attributes["duration"])
     elif np.array_equal(attributes["temporal"],'stretched_sin'):

@@ -10,6 +10,7 @@ to produce the appropriate connectivity in overlapping 2-D sheets of cells.
 import numpy as np
 from classes import *
 from scipy.io import loadmat
+import stimuli as stim
 
 # note: width should be in um in the structs and then transformed to pixel values
 # later in the script. similarly, duration should be in ms and then transformed to
@@ -20,7 +21,7 @@ from scipy.io import loadmat
 # order of parameters in attributes is order of element position in connectivity,
 # and order element types are read in connectivity is determined in inputs
 
-image = np.zeros((img_size[0],img_size[1],100))
+image = stim.expanding_disk([100,100],[0,0],50,0,100,1,200,100)
 # there are also separate receptive fields of center and surround
 # The receptive fields Dawna gave me were sampled at 2 ms. I keep this time step here
 # however I could consider lowering it since the receptive fields of ganglion and
@@ -140,7 +141,7 @@ AmacrineCell1 = {"inputs":['BipolarCell1','BipolarCell2','BipolarCell3a','Bipola
 # Ganglion cells
 
 phenom_rec_field = np.array([250,250])
-n_amII = (phenom_rec_field/BipolarCell6['attributes']['width']).astype(int)  # using bipolar because 
+n_amII = (phenom_rec_field/BipolarCell6['attributes']['width']).astype(int)  # using bipolar because amacrines do not have spatial rec fields defined
 AmacrineCellIITOGanglionCellsOFFa = [(int(x-round(n_amII[0]/2)),int(y-round(n_amII[1]/2)),-1) for x in range(n_amII[0]) for y in range(n_amII[1])]
 temp =  list(zip(*AmacrineCellIITOGanglionCellsOFFa))
 AmacrineCellIITOGanglionCellsOFFaw = temp[2]; AmacrineCellIITOGanglionCellsOFFaconn = list(zip(temp[0],temp[1]))
@@ -152,7 +153,7 @@ GanglionCellsOFFa = {"inputs":['BipolarCell1','BipolarCell2','AmacrineCellAII'],
     "connectivity": {'AmacrineCellAII':AmacrineCellIITOGanglionCellsOFFaconn},
     "weights": np.array(AmacrineCellIITOGanglionCellsOFFaw), "attributes":
     {'temporal': ['stretched_sin']*total_n,'duration': [10]*total_n,
-    'coeffs': [norm([2,3])]*total_n, 'activation': 'relu','threshold': 0, 'recurrent': [1, -0.2]}}
+    'coeffs': [norm([2,3])]*total_n, 'activation': 'relu','threshold': 0}}
 
 GanglionCellFminiOFF = {"inputs":['BipolarCell1','BipolarCell2','AmacrineCellAII'], "connectivity": {'BipolarCell1':
     [(-1,-1),(-1,0),(-1,1),(0,-1),(0,0),(0,1),(1,-1),(1,0),(1,1)]},
@@ -225,7 +226,7 @@ total_n = len(BipolarCell6TOGanglionCellsONaconn)
 GanglionCellsONa = {"inputs":['BipolarCell6','BipolarCell7','BipolarCell8','BipolarCell9',
     'BipolarCellR','AmacrineCellAII'], "connectivity": {'BipolarCell6':BipolarCell6TOGanglionCellsONaconn},
     "weights": np.array(BipolarCell6TOGanglionCellsONaw), "attributes": {'temporal': ['stretched_sin']*total_n,'duration': [10]*total_n,
-    'coeffs': [norm([2,3])]*total_n, 'activation': 'relu','threshold': 0, 'recurrent': [1, -0.2]}}
+    'coeffs': [norm([2,3])]*total_n, 'activation': 'relu','threshold': 0}}
 
 GanglionCellFminiON = {"inputs":['BipolarCell3a','BipolarCell3b','BipolarCell4',
     'BipolarCell5A','BipolarCell5R','BipolarCell5X','BipolarCellX','AmacrineCellWidefield',
@@ -242,18 +243,28 @@ GanglionCellFmidiON = {"inputs":['BipolarCell5A','BipolarCell5R','BipolarCell5X'
 
 # Bipolar5 was split to 3 categories, and we do not know which connects here. 
 # It does not make much of a difference though in terms of receptive fields.
+
+# could also connect bipolar6 to simplify the circuit
     
 phenom_rec_field = np.array([200,200])
 n_bip5A = (phenom_rec_field/BipolarCell5A['attributes']['width']).astype(int)
 BipolarCell5ATOGanglionCelltONa = [(int(x-round(n_bip5A[0]/2)),int(y-round(n_bip5A[1]/2)),Gaussian(x-n_bip5A[0]/2,y-n_bip5A[1]/2,n_bip5A[0]/3,n_bip5A[1]/3,.5)) for x in range(n_bip5A[0]) for y in range(n_bip5A[1])]
 temp =  list(zip(*BipolarCell5ATOGanglionCelltONa))
 BipolarCell5ATOGanglionCelltONaw = temp[2]; BipolarCell5ATOGanglionCelltONaconn = list(zip(temp[0],temp[1]))
-total_n = len(BipolarCell5ATOGanglionCelltONaconn)
+
+n_amII = (phenom_rec_field/BipolarCell6['attributes']['width']).astype(int) 
+AmacrineCellAIITOGanglionCelltONa = [(int(x-round(n_amII[0]/2)),int(y-round(n_amII[1]/2)),-1) for x in range(n_amII[0]) for y in range(n_amII[1])]
+temp =  list(zip(*AmacrineCellAIITOGanglionCelltONa))
+AmacrineCellAIITOGanglionCelltONaw = temp[2]; AmacrineCellAIITOGanglionCelltONaconn = list(zip(temp[0],temp[1]))
+
+weights = np.array(np.concatenate((BipolarCell5ATOGanglionCelltONaw,AmacrineCellAIITOGanglionCelltONaw)))
+total_n = len(weights)
     
 GanglionCelltONa = {"inputs":['BipolarCell5A','BipolarCell5R','BipolarCell5X',
-    'BipolarCellX','AmacrineCellWidefield','AmacrineCellAII'], "connectivity": {'BipolarCell5A':BipolarCell5ATOGanglionCelltONaconn},
-    "weights": np.array(BipolarCell5ATOGanglionCelltONaw), "attributes": {'temporal': ['stretched_sin']*total_n,'duration': [10]*total_n,
-    'coeffs': [norm([2,3])]*total_n, 'activation': 'relu','threshold': 0, 'recurrent': [1, -0.2]}}
+    'BipolarCellX','AmacrineCellWidefield','AmacrineCellAII'], "connectivity": 
+    {'BipolarCell5A':BipolarCell5ATOGanglionCelltONaconn,'AmacrineCellAII':AmacrineCellAIITOGanglionCelltONaconn},
+    "weights": weights, "attributes": {'temporal': ['stretched_sin']*total_n,'duration': [10]*total_n,
+    'coeffs': [norm([2,3])]*total_n, 'activation': 'relu','threshold': 0}}
 
 GanglionCellsOnDS7id = {"inputs":['BipolarCell5A','BipolarCell5R','BipolarCell5X',
     'AmacrineCellOnS','AmacrineCellAII'], "connectivity": {'BipolarCell5A':

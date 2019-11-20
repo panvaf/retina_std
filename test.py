@@ -6,9 +6,6 @@ from classes import * # necessary to import object classes
 from celltypes import *
 import numpy as np
 import network as net
-import stimuli as stim
-
-image = stim.expanding_disk([100,100],[1,0],3,.3,20,1,200,100)
 
 ###############################################################################
 
@@ -74,7 +71,7 @@ classes = {'BipolarCell':BipolarCell,'AmacrineCell':AmacrineCell,'GanglionCell':
 
 cells = net.network_init(structs,size,classes)
 
-for l in cells['GanglionCellPV5']: 
+for l in cells['GanglionCelltONa']: 
     for cell in l: 
         cell.out()
 

@@ -28,8 +28,9 @@ def network_init(structs,size,classes):
                         
         # initialize 2-D grid of cells
         neuron_list = [[None]*value for i in range(value)]
-        x = np.linspace(1, img_size[0]-1, value)
-        y = np.linspace(1, img_size[1]-1, value)
+        offset0 = int(img_size[0]/value/2); offset1 = int(img_size[1]/value/2);
+        x = np.linspace(offset0, img_size[0]-offset0, value)
+        y = np.linspace(offset1, img_size[1]-offset1, value)
         
         struct = structs[key]
         
