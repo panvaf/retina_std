@@ -21,7 +21,9 @@ import stimuli as stim
 # order of parameters in attributes is order of element position in connectivity,
 # and order element types are read in connectivity is determined in inputs
 
-image = stim.expanding_disk([100,100],[0,0],50,0,100,1,200,100)
+image = stim.expanding_disk([100,100],[0,0],50,0,100,1,200,200,500)
+#image = np.zeros((200,200,100))
+
 # there are also separate receptive fields of center and surround
 # The receptive fields Dawna gave me were sampled at 2 ms. I keep this time step here
 # however I could consider lowering it since the receptive fields of ganglion and
@@ -31,65 +33,67 @@ BipolarTemporals = BipolarTemporals['pantelis_bip_filters']
 PV5recurrent = loadmat('C:\\Users\\user\\Documents\\CNS\\1st Rotation\\data\\gc_fdbk_filt.mat')
 PV5recurrent = PV5recurrent['feedbackfilt']
 
+# make sure any receptive fields that are determined by the user are normalised
+
 ###############################################################################
 
 # Bipolar cells
 
 BipolarCell1 = {"inputs":[image], "connectivity": [], "weights": np.array([1]), "attributes":
     {'type': 'On', 'separable': True, 'spatial': 'DoG', 'width': np.array([30, 30]),
-     'on_off_ratio': 5/2, 'temporal': BipolarTemporals[:,0], 'activation': 'relu', 'threshold': 0}}
+     'on_off_ratio': 5/2, 'temporal': norm(BipolarTemporals[:,0]), 'activation': 'relu', 'threshold': 0}}
 
 BipolarCell2 = {"inputs":[image], "connectivity": [], "weights": np.array([1]), "attributes":
     {'type': 'On', 'separable': True, 'spatial': 'DoG', 'width': np.array([30, 30]),
-     'on_off_ratio': 5/2, 'temporal': BipolarTemporals[:,1], 'activation': 'relu', 'threshold': 0}}   
+     'on_off_ratio': 5/2, 'temporal': norm(BipolarTemporals[:,1]), 'activation': 'relu', 'threshold': 0}}   
 
 BipolarCell3a = {"inputs":[image], "connectivity": [], "weights": np.array([1]), "attributes":
     {'type': 'On', 'separable': True, 'spatial': 'DoG', 'width': np.array([30, 30]),
-     'on_off_ratio': 5/2, 'temporal': BipolarTemporals[:,2], 'activation': 'relu', 'threshold': 0}}
+     'on_off_ratio': 5/2, 'temporal': norm(BipolarTemporals[:,2]), 'activation': 'relu', 'threshold': 0}}
 
 BipolarCell3b = {"inputs":[image], "connectivity": [], "weights": np.array([1]), "attributes":
     {'type': 'On', 'separable': True, 'spatial': 'DoG', 'width': np.array([30, 30]),
-     'on_off_ratio': 5/2, 'temporal': BipolarTemporals[:,3], 'activation': 'relu', 'threshold': 0}}
+     'on_off_ratio': 5/2, 'temporal': norm(BipolarTemporals[:,3]), 'activation': 'relu', 'threshold': 0}}
     
 BipolarCell4 = {"inputs":[image], "connectivity": [], "weights": np.array([1]), "attributes":
     {'type': 'On', 'separable': True, 'spatial': 'DoG', 'width': np.array([30, 30]),
-     'on_off_ratio': 5/2, 'temporal': BipolarTemporals[:,4], 'activation': 'relu', 'threshold': 0}}
+     'on_off_ratio': 5/2, 'temporal': norm(BipolarTemporals[:,4]), 'activation': 'relu', 'threshold': 0}}
     
 BipolarCell5A = {"inputs":[image], "connectivity": [], "weights": np.array([1]), "attributes":
     {'type': 'On', 'separable': True, 'spatial': 'DoG', 'width': np.array([30, 30]),
-     'on_off_ratio': 5/2, 'temporal': BipolarTemporals[:,5], 'activation': 'relu', 'threshold': 0}}
+     'on_off_ratio': 5/2, 'temporal': norm(BipolarTemporals[:,5]), 'activation': 'relu', 'threshold': 0}}
     
 BipolarCell5R = {"inputs":[image], "connectivity": [], "weights": np.array([1]), "attributes":
     {'type': 'On', 'separable': True, 'spatial': 'DoG', 'width': np.array([30, 30]),
-     'on_off_ratio': 5/2, 'temporal': BipolarTemporals[:,6], 'activation': 'relu', 'threshold': 0}}
+     'on_off_ratio': 5/2, 'temporal': norm(BipolarTemporals[:,6]), 'activation': 'relu', 'threshold': 0}}
 
 BipolarCell5X = {"inputs":[image], "connectivity": [], "weights": np.array([1]), "attributes":
     {'type': 'On', 'separable': True, 'spatial': 'DoG', 'width': np.array([30, 30]),
-     'on_off_ratio': 5/2, 'temporal': BipolarTemporals[:,7], 'activation': 'relu', 'threshold': 0}}
+     'on_off_ratio': 5/2, 'temporal': norm(BipolarTemporals[:,7]), 'activation': 'relu', 'threshold': 0}}
     
 BipolarCellX = {"inputs":[image], "connectivity": [], "weights": np.array([1]), "attributes":
     {'type': 'On', 'separable': True, 'spatial': 'DoG', 'width': np.array([30, 30]),
-     'on_off_ratio': 5/2, 'temporal': BipolarTemporals[:,8], 'activation': 'relu', 'threshold': 0}}
+     'on_off_ratio': 5/2, 'temporal': norm(BipolarTemporals[:,8]), 'activation': 'relu', 'threshold': 0}}
     
 BipolarCell6 = {"inputs":[image], "connectivity": [], "weights": np.array([1]), "attributes":
     {'type': 'On', 'separable': True, 'spatial': 'DoG', 'width': np.array([30, 30]),
-     'on_off_ratio': 5/2, 'temporal': BipolarTemporals[:,9], 'activation': 'relu', 'threshold': 0}}
+     'on_off_ratio': 5/2, 'temporal': norm(BipolarTemporals[:,9]), 'activation': 'relu', 'threshold': 0}}
     
 BipolarCell7 = {"inputs":[image], "connectivity": [], "weights": np.array([1]), "attributes":
     {'type': 'On', 'separable': True, 'spatial': 'DoG', 'width': np.array([30, 30]),
-     'on_off_ratio': 5/2, 'temporal': BipolarTemporals[:,10], 'activation': 'relu', 'threshold': 0}}
+     'on_off_ratio': 5/2, 'temporal': norm(BipolarTemporals[:,10]), 'activation': 'relu', 'threshold': 0}}
 
 BipolarCell8 = {"inputs":[image], "connectivity": [], "weights": np.array([1]), "attributes":
     {'type': 'On', 'separable': True, 'spatial': 'DoG', 'width': np.array([30, 30]),
-     'on_off_ratio': 5/2, 'temporal': BipolarTemporals[:,11], 'activation': 'relu', 'threshold': 0}}
+     'on_off_ratio': 5/2, 'temporal': norm(BipolarTemporals[:,11]), 'activation': 'relu', 'threshold': 0}}
 
 BipolarCell9 = {"inputs":[image], "connectivity": [], "weights": np.array([1]), "attributes":
     {'type': 'On', 'separable': True, 'spatial': 'DoG', 'width': np.array([30, 30]),
-     'on_off_ratio': 5/2, 'temporal': BipolarTemporals[:,12], 'activation': 'relu', 'threshold': 0}}
+     'on_off_ratio': 5/2, 'temporal': norm(BipolarTemporals[:,12]), 'activation': 'relu', 'threshold': 0}}
 
 BipolarCellR = {"inputs":[image], "connectivity": [], "weights": np.array([1]), "attributes":
     {'type': 'On', 'separable': True, 'spatial': 'DoG', 'width': np.array([30, 30]),
-     'on_off_ratio': 5/2, 'temporal': BipolarTemporals[:,13], 'activation': 'relu', 'threshold': 0}}
+     'on_off_ratio': 5/2, 'temporal': norm(BipolarTemporals[:,13]), 'activation': 'relu', 'threshold': 0}}
     
 ###############################################################################
     
@@ -98,20 +102,20 @@ BipolarCellR = {"inputs":[image], "connectivity": [], "weights": np.array([1]), 
 AmacrineCellOffS = {"inputs":['BipolarCell2','BipolarCell3a'], "connectivity": {'BipolarCell2':
     [(-1,-1),(-1,0),(-1,1),(0,-1),(0,0),(0,1),(1,-1),(1,0),(1,1)]},
     "weights": np.array([1]*9), "attributes": {'temporal': ['stretched_sin']*9,'duration': [10]*9,
-    'coeffs': [norm([2,3])]*9, 'activation': 'relu','threshold': 0}}
+    'coeffs': [[2,3]]*9, 'activation': 'relu','threshold': 0}}
     
 AmacrineCellOnS = {"inputs":['BipolarCell5A','BipolarCell5R','BipolarCell7'], "connectivity": {'BipolarCell5A':
     [(-1,-1),(-1,0),(-1,1),(0,-1),(0,0),(0,1),(1,-1),(1,0),(1,1)]},
     "weights": np.array([1]*9), "attributes": {'temporal': ['stretched_sin']*9,'duration': [10]*9,
-    'coeffs': [norm([2,3])]*9, 'activation': 'relu','threshold': 0}}
+    'coeffs': [[2,3]]*9, 'activation': 'relu','threshold': 0}}
     
 AmacrineCellWidefield = {"inputs":['BipolarCell3a','BipolarCell3b','BipolarCell4',
     'BipolarCell5A','BipolarCell5R','BipolarCell5X','BipolarCellX'], "connectivity": {'BipolarCell3a':
     [(-1,-1),(-1,0),(-1,1),(0,-1),(0,0),(0,1),(1,-1),(1,0),(1,1)]},
     "weights": np.array([1]*9), "attributes": {'temporal': ['stretched_sin']*9,'duration': [10]*9,
-    'coeffs': [norm([2,3])]*9, 'activation': 'relu','threshold': 0}}
+    'coeffs': [[2,3]]*9, 'activation': 'relu','threshold': 0}}
 
-BipolarCell6TOAmacrineCellAII = [(0,0,5)]
+BipolarCell6TOAmacrineCellAII = [(0,0,1)]
 temp =  list(zip(*BipolarCell6TOAmacrineCellAII))
 BipolarCell6TOAmacrineCellAIIw = temp[2]; BipolarCell6TOAmacrineCellAIIconn = list(zip(temp[0],temp[1]))
 
@@ -119,7 +123,7 @@ AmacrineCellAII = {"inputs":['BipolarCell1','BipolarCell2','BipolarCell3a','Bipo
     'BipolarCell4','BipolarCell5A','BipolarCell5R','BipolarCell5X','BipolarCell6','BipolarCell7',
     'BipolarCell8','BipolarCell9','BipolarCellR'], "connectivity": {'BipolarCell6': BipolarCell6TOAmacrineCellAIIconn},
     "weights": np.array(BipolarCell6TOAmacrineCellAIIw), "attributes": {'temporal': ['stretched_sin']*1,'duration': [10]*1,
-    'coeffs': [norm([2,3])]*1, 'activation': 'relu','threshold': 1.0}}
+    'coeffs': [[2,3]]*1, 'activation': 'relu','threshold': 1.0}}
 
 BipolarCell3bTOAmacrineCell1 = [(-3,0,.5),(-2,0,.5),(-1,0,.5),(0,0,.5),(1,0,.5),(2,0,.5),(3,0,.5),(4,0,.5)]
 temp =  list(zip(*BipolarCell3bTOAmacrineCell1))
@@ -134,7 +138,15 @@ AmacrineCell1 = {"inputs":['BipolarCell1','BipolarCell2','BipolarCell3a','Bipola
     'BipolarCell8','BipolarCell9','BipolarCellR'], "connectivity": {'BipolarCell3b': BipolarCell3bTOAmacrineCell1conn,'BipolarCell5R':BipolarCell5RTOAmacrineCell1conn},
     "weights": np.array(np.concatenate((BipolarCell3bTOAmacrineCell1w,BipolarCell5RTOAmacrineCell1w))), 
     "attributes": {'temporal': ['stretched_sin']*16,'duration': [10]*16,
-    'coeffs': [norm([2,3])]*16, 'activation': 'relu','threshold': 0}}
+    'coeffs': [[2,3]]*16, 'activation': 'relu','threshold': 0}}
+
+###############################################################################
+
+# Presynaptic inhibition
+
+PresynInhBip5AAmAII = {"inputs":['BipolarCell5A','AmacrineCellAII'], 
+    "connectivity": {'BipolarCell5A':(0,0),'AmacrineCellAII':(0,0)},
+    "weights": np.array([.5,-1]), "attributes": {}}
 
 ###############################################################################
     
@@ -153,17 +165,17 @@ GanglionCellsOFFa = {"inputs":['BipolarCell1','BipolarCell2','AmacrineCellAII'],
     "connectivity": {'AmacrineCellAII':AmacrineCellIITOGanglionCellsOFFaconn},
     "weights": np.array(AmacrineCellIITOGanglionCellsOFFaw), "attributes":
     {'temporal': ['stretched_sin']*total_n,'duration': [10]*total_n,
-    'coeffs': [norm([2,3])]*total_n, 'activation': 'relu','threshold': 0}}
+    'coeffs': [[2,3]]*total_n, 'activation': 'relu','threshold': 0}}
 
 GanglionCellFminiOFF = {"inputs":['BipolarCell1','BipolarCell2','AmacrineCellAII'], "connectivity": {'BipolarCell1':
     [(-1,-1),(-1,0),(-1,1),(0,-1),(0,0),(0,1),(1,-1),(1,0),(1,1)]},
     "weights": np.array([1]*9), "attributes": {'temporal': ['stretched_sin']*9,'duration': [10]*9,
-    'coeffs': [norm([2,3])]*9, 'activation': 'relu','threshold': 0, 'recurrent': [1, -0.2]}}
+    'coeffs': [[2,3]]*9, 'activation': 'relu','threshold': 0, 'recurrent': [1, -0.2]}}
     
 GanglionCellFmidiOFF = {"inputs":['BipolarCell1','BipolarCell2','AmacrineCellAII'], "connectivity": {'BipolarCell1':
     [(-1,-1),(-1,0),(-1,1),(0,-1),(0,0),(0,1),(1,-1),(1,0),(1,1)]},
     "weights": np.array([1]*9), "attributes": {'temporal': ['stretched_sin']*9,'duration': [10]*9,
-    'coeffs': [norm([2,3])]*9, 'activation': 'relu','threshold': 0, 'recurrent': [1, -0.2]}}
+    'coeffs': [[2,3]]*9, 'activation': 'relu','threshold': 0, 'recurrent': [1, -0.2]}}
 
 BipolarCell4TOGanglionCellPV5 = [(-3,0,.5),(-2,0,.5),(-1,0,.5),(0,0,.5),(1,0,.5),(2,0,.5),(3,0,.5),(4,0,.5)]
 temp =  list(zip(*BipolarCell4TOGanglionCellPV5))
@@ -178,41 +190,41 @@ GanglionCellPV5 = {"inputs":['BipolarCell3a','BipolarCell3b','BipolarCell4',
     {'BipolarCell4': BipolarCell4TOGanglionCellPV5conn, 'AmacrineCellAII': AmacrineCellAIITOGanglionCellPV5conn},
     "weights": np.array(np.concatenate((BipolarCell4TOGanglionCellPV5w,AmacrineCellAIITOGanglionCellPV5w))),
     "attributes": {'temporal': ['stretched_sin']*16,'duration': [10]*16,
-    'coeffs': [norm([2,3])]*16, 'activation': 'relu','threshold': 1.7, 'recurrent': PV5recurrent}}
+    'coeffs': [[2,3]]*16, 'activation': 'relu','threshold': 1.7, 'recurrent': PV5recurrent}}
 
 GanglionCellooDS37c = {"inputs":['BipolarCell1','BipolarCell2','BipolarCell3a',
     'BipolarCell3b','BipolarCell4','BipolarCell5A','BipolarCell5R','BipolarCell5X',
     'AmacrineCellOffS','AmacrineCellOnS','AmacrineCellAII'], "connectivity": {'BipolarCell1':
     [(-1,-1),(-1,0),(-1,1),(0,-1),(0,0),(0,1),(1,-1),(1,0),(1,1)]},
     "weights": np.array([1]*9), "attributes": {'temporal': ['stretched_sin']*9,'duration': [10]*9,
-    'coeffs': [norm([2,3])]*9, 'activation': 'relu','threshold': 0, 'recurrent': [1, -0.2]}}
+    'coeffs': [[2,3]]*9, 'activation': 'relu','threshold': 0, 'recurrent': [1, -0.2]}}
     
 GanglionCellooDS37d = {"inputs":['BipolarCell1','BipolarCell2','BipolarCell3a',
     'BipolarCell3b','BipolarCell4','BipolarCell5A','BipolarCell5R','BipolarCell5X',
     'AmacrineCellOffS','AmacrineCellOnS','AmacrineCellAII'], "connectivity": {'BipolarCell1':
     [(-1,-1),(-1,0),(-1,1),(0,-1),(0,0),(0,1),(1,-1),(1,0),(1,1)]},
     "weights": np.array([1]*9), "attributes": {'temporal': ['stretched_sin']*9,'duration': [10]*9,
-    'coeffs': [norm([2,3])]*9, 'activation': 'relu','threshold': 0, 'recurrent': [1, -0.2]}}
+    'coeffs': [[2,3]]*9, 'activation': 'relu','threshold': 0, 'recurrent': [1, -0.2]}}
     
 GanglionCellooDS37r = {"inputs":['BipolarCell1','BipolarCell2','BipolarCell3a',
     'BipolarCell3b','BipolarCell4','BipolarCell5A','BipolarCell5R','BipolarCell5X',
     'AmacrineCellOffS','AmacrineCellOnS','AmacrineCellAII'], "connectivity": {'BipolarCell1':
     [(-1,-1),(-1,0),(-1,1),(0,-1),(0,0),(0,1),(1,-1),(1,0),(1,1)]},
     "weights": np.array([1]*9), "attributes": {'temporal': ['stretched_sin']*9,'duration': [10]*9,
-    'coeffs': [norm([2,3])]*9, 'activation': 'relu','threshold': 0, 'recurrent': [1, -0.2]}}
+    'coeffs': [[2,3]]*9, 'activation': 'relu','threshold': 0, 'recurrent': [1, -0.2]}}
     
 GanglionCellooDS37v = {"inputs":['BipolarCell1','BipolarCell2','BipolarCell3a',
     'BipolarCell3b','BipolarCell4','BipolarCell5A','BipolarCell5R','BipolarCell5X',
     'AmacrineCellOffS','AmacrineCellOnS','AmacrineCellAII'], "connectivity": {'BipolarCell1':
     [(-1,-1),(-1,0),(-1,1),(0,-1),(0,0),(0,1),(1,-1),(1,0),(1,1)]},
     "weights": np.array([1]*9), "attributes": {'temporal': ['stretched_sin']*9,'duration': [10]*9,
-    'coeffs': [norm([2,3])]*9, 'activation': 'relu','threshold': 0, 'recurrent': [1, -0.2]}}
+    'coeffs': [[2,3]]*9, 'activation': 'relu','threshold': 0, 'recurrent': [1, -0.2]}}
 
 GanglionCellW3 = {"inputs":['BipolarCell3a','BipolarCell3b','BipolarCell4','BipolarCell5A',
     'BipolarCell5R','BipolarCell5X','BipolarCellX','AmacrineCellWidefield','AmacrineCellAII'],
     "connectivity": {'BipolarCell3a': [(-1,-1),(-1,0),(-1,1),(0,-1),(0,0),(0,1),(1,-1),(1,0),(1,1)]},
     "weights": np.array([1]*9), "attributes": {'temporal': ['stretched_sin']*9,'duration': [10]*9,
-    'coeffs': [norm([2,3])]*9, 'activation': 'relu','threshold': 0, 'recurrent': [1, -0.2]}}
+    'coeffs': [[2,3]]*9, 'activation': 'relu','threshold': 0, 'recurrent': [1, -0.2]}}
 
 # this was modelled in  Schwartz 2012
 
@@ -226,20 +238,20 @@ total_n = len(BipolarCell6TOGanglionCellsONaconn)
 GanglionCellsONa = {"inputs":['BipolarCell6','BipolarCell7','BipolarCell8','BipolarCell9',
     'BipolarCellR','AmacrineCellAII'], "connectivity": {'BipolarCell6':BipolarCell6TOGanglionCellsONaconn},
     "weights": np.array(BipolarCell6TOGanglionCellsONaw), "attributes": {'temporal': ['stretched_sin']*total_n,'duration': [10]*total_n,
-    'coeffs': [norm([2,3])]*total_n, 'activation': 'relu','threshold': 0}}
+    'coeffs': [[2,3]]*total_n, 'activation': 'relu','threshold': 0}}
 
 GanglionCellFminiON = {"inputs":['BipolarCell3a','BipolarCell3b','BipolarCell4',
     'BipolarCell5A','BipolarCell5R','BipolarCell5X','BipolarCellX','AmacrineCellWidefield',
     'AmacrineCellAII'], "connectivity": {'BipolarCell3a':
     [(-1,-1),(-1,0),(-1,1),(0,-1),(0,0),(0,1),(1,-1),(1,0),(1,1)]},
     "weights": np.array([1]*9), "attributes": {'temporal': ['stretched_sin']*9,'duration': [10]*9,
-    'coeffs': [norm([2,3])]*9, 'activation': 'relu','threshold': 0, 'recurrent': [1, -0.2]}}
+    'coeffs': [[2,3]]*9, 'activation': 'relu','threshold': 0, 'recurrent': [1, -0.2]}}
 
 GanglionCellFmidiON = {"inputs":['BipolarCell5A','BipolarCell5R','BipolarCell5X',
     'BipolarCellX','AmacrineCellWidefield','AmacrineCellAII'], "connectivity": {'BipolarCell5A':
     [(-1,-1),(-1,0),(-1,1),(0,-1),(0,0),(0,1),(1,-1),(1,0),(1,1)]},
     "weights": np.array([1]*9), "attributes": {'temporal': ['stretched_sin']*9,'duration': [10]*9,
-    'coeffs': [norm([2,3])]*9, 'activation': 'relu','threshold': 0, 'recurrent': [1, -0.2]}}
+    'coeffs': [[2,3]]*9, 'activation': 'relu','threshold': 0, 'recurrent': [1, -0.2]}}
 
 # Bipolar5 was split to 3 categories, and we do not know which connects here. 
 # It does not make much of a difference though in terms of receptive fields.
@@ -264,30 +276,44 @@ GanglionCelltONa = {"inputs":['BipolarCell5A','BipolarCell5R','BipolarCell5X',
     'BipolarCellX','AmacrineCellWidefield','AmacrineCellAII'], "connectivity": 
     {'BipolarCell5A':BipolarCell5ATOGanglionCelltONaconn,'AmacrineCellAII':AmacrineCellAIITOGanglionCelltONaconn},
     "weights": weights, "attributes": {'temporal': ['stretched_sin']*total_n,'duration': [10]*total_n,
-    'coeffs': [norm([2,3])]*total_n, 'activation': 'relu','threshold': 0}}
+    'coeffs': [[2,3]]*total_n, 'activation': 'relu','threshold': 0}}
+    
+phenom_rec_field = np.array([200,200])
+n_presyn = (phenom_rec_field/BipolarCell5A['attributes']['width']).astype(int)
+PresynInhBip5AAmAIITOGanglionCelltONaPre = [(int(x-round(n_presyn[0]/2)),int(y-round(n_presyn[1]/2)),Gaussian(x-n_presyn[0]/2,y-n_presyn[1]/2,n_presyn[0]/3,n_presyn[1]/3,1)) for x in range(n_presyn[0]) for y in range(n_presyn[1])]
+temp =  list(zip(*PresynInhBip5AAmAIITOGanglionCelltONaPre))
+PresynInhBip5AAmAIITOGanglionCelltONaPrew = temp[2]; PresynInhBip5AAmAIITOGanglionCelltONaPreconn = list(zip(temp[0],temp[1]))
+total_n = len(PresynInhBip5AAmAIITOGanglionCelltONaPrew)
+
+    
+GanglionCelltONaPre = {"inputs":['BipolarCell5A','BipolarCell5R','BipolarCell5X',
+    'BipolarCellX','AmacrineCellWidefield','AmacrineCellAII','PresynInhBip5AAmAII'], "connectivity": 
+    {'PresynInhBip5AAmAII':PresynInhBip5AAmAIITOGanglionCelltONaPreconn},
+    "weights": PresynInhBip5AAmAIITOGanglionCelltONaPrew, "attributes": {'temporal': ['stretched_sin']*total_n,'duration': [10]*total_n,
+    'coeffs': [[2,3]]*total_n, 'activation': 'relu','threshold': 0}}
 
 GanglionCellsOnDS7id = {"inputs":['BipolarCell5A','BipolarCell5R','BipolarCell5X',
     'AmacrineCellOnS','AmacrineCellAII'], "connectivity": {'BipolarCell5A':
     [(-1,-1),(-1,0),(-1,1),(0,-1),(0,0),(0,1),(1,-1),(1,0),(1,1)]},
     "weights": np.array([1]*9), "attributes": {'temporal': ['stretched_sin']*9,'duration': [10]*9,
-    'coeffs': [norm([2,3])]*9, 'activation': 'relu','threshold': 0, 'recurrent': [1, -0.2]}}
+    'coeffs': [[2,3]]*9, 'activation': 'relu','threshold': 0, 'recurrent': [1, -0.2]}}
     
 GanglionCellsOnDS7ir = {"inputs":['BipolarCell5A','BipolarCell5R','BipolarCell5X',
     'AmacrineCellOnS','AmacrineCellAII'], "connectivity": {'BipolarCell5A':
     [(-1,-1),(-1,0),(-1,1),(0,-1),(0,0),(0,1),(1,-1),(1,0),(1,1)]},
     "weights": np.array([1]*9), "attributes": {'temporal': ['stretched_sin']*9,'duration': [10]*9,
-    'coeffs': [norm([2,3])]*9, 'activation': 'relu','threshold': 0, 'recurrent': [1, -0.2]}}
+    'coeffs': [[2,3]]*9, 'activation': 'relu','threshold': 0, 'recurrent': [1, -0.2]}}
     
 GanglionCellsOnDS7iv = {"inputs":['BipolarCell5A','BipolarCell5R','BipolarCell5X',
     'AmacrineCellOnS','AmacrineCellAII'], "connectivity": {'BipolarCell5A':
     [(-1,-1),(-1,0),(-1,1),(0,-1),(0,0),(0,1),(1,-1),(1,0),(1,1)]},
     "weights": np.array([1]*9), "attributes": {'temporal': ['stretched_sin']*9,'duration': [10]*9,
-    'coeffs': [norm([2,3])]*9, 'activation': 'relu','threshold': 0, 'recurrent': [1, -0.2]}}
+    'coeffs': [[2,3]]*9, 'activation': 'relu','threshold': 0, 'recurrent': [1, -0.2]}}
 
 GanglionCelltOnDS7o = {"inputs":['AmacrineCellOnS','AmacrineCellAII'], "connectivity": {'AmacrineCellOnS':
     [(-1,-1),(-1,0),(-1,1),(0,-1),(0,0),(0,1),(1,-1),(1,0),(1,1)]},
     "weights": np.array([1]*9), "attributes": {'temporal': ['stretched_sin']*9,'duration': [10]*9,
-    'coeffs': [norm([2,3])]*9, 'activation': 'relu','threshold': 0, 'recurrent': [1, -0.2]}}
+    'coeffs': [[2,3]]*9, 'activation': 'relu','threshold': 0, 'recurrent': [1, -0.2]}}
     
 ###############################################################################    
     
@@ -345,3 +371,4 @@ GanglionCellsOnDS7id["attributes"]['duration'] = [dur/temporal_res for dur in Ga
 GanglionCellsOnDS7ir["attributes"]['duration'] = [dur/temporal_res for dur in GanglionCellsOnDS7ir["attributes"]['duration']]
 GanglionCellsOnDS7iv["attributes"]['duration'] = [dur/temporal_res for dur in GanglionCellsOnDS7iv["attributes"]['duration']]
 GanglionCelltOnDS7o["attributes"]['duration'] = [dur/temporal_res for dur in GanglionCelltOnDS7o["attributes"]['duration']]
+GanglionCelltONaPre["attributes"]['duration'] = [dur/temporal_res for dur in GanglionCelltONaPre["attributes"]['duration']]

@@ -246,11 +246,11 @@ class Delay(Element):
     def __init__(self, inputs, weights, center, attributes):
         
         # Attributes can contain:
-        # t_delay : time delay the element introduces
+        # t_delay : time delay the element introduces, in time units
         
         super().__init__(inputs, weights, center)
         # convert time to count
-        self.delay = int(np.round(attributes["t_delay"]/temporal_res))
+        self.delay = int(attributes["t_delay"])
     
     def out(self):
         
@@ -300,7 +300,9 @@ def Spatial(center,attributes):
     
     if np.array_equal(attributes["spatial"],'DoG'):
         spatial = DoG(attributes["width"],attributes["on_off_ratio"],center,img_size)
-        
+    
+    spatial = norm(spatial)
+    
     return spatial
 
 
@@ -356,6 +358,8 @@ def Temporal(attributes):
     elif np.array_equal(attributes["temporal"],'stretched_sin'):
         temporal = stretched_sin(attributes["duration"],attributes["coeffs"])
         
+    temporal = norm(temporal)
+    
     return temporal
 
 
@@ -424,6 +428,8 @@ def sigmoid(h,threshold,k=.5,b=5,s=1):
     
 # Utils
     
-def norm(vector):
-    coeff = np.linalg.norm(vector)
-    return vector/coeff
+def norm(array):
+    coeff = np.linalg.norm(array)
+    if coeff>0:
+        array = array/coeff
+    return array

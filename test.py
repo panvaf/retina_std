@@ -61,11 +61,11 @@ structs = {'BipolarCell1':BipolarCell1, 'BipolarCell2':BipolarCell2, 'BipolarCel
            'GanglionCellooDS37r':GanglionCellooDS37r, 'GanglionCellooDS37v':GanglionCellooDS37v, 'GanglionCellW3':GanglionCellW3,
            'GanglionCellsONa':GanglionCellsONa, 'GanglionCellFminiON':GanglionCellFminiON, 'GanglionCellFmidiON':GanglionCellFmidiON, 
            'GanglionCelltONa':GanglionCelltONa, 'GanglionCellsOnDS7id':GanglionCellsOnDS7id, 'GanglionCellsOnDS7ir':GanglionCellsOnDS7ir, 
-           'GanglionCellsOnDS7iv':GanglionCellsOnDS7iv, 'GanglionCelltOnDS7o':GanglionCelltOnDS7o}
+           'GanglionCellsOnDS7iv':GanglionCellsOnDS7iv, 'GanglionCelltOnDS7o':GanglionCelltOnDS7o, 'GanglionCelltONaPre':GanglionCelltONaPre}
 
 
-size = {'BipolarCell4':10,'BipolarCell5A':10,'BipolarCell6':10,'AmacrineCellAII':10,
-        'GanglionCellPV5':1,'GanglionCellsOFFa':1,'GanglionCellsONa':1,'GanglionCelltONa':1}
+size = {'BipolarCell4':10,'BipolarCell5A':10,'BipolarCell6':10,'AmacrineCellAII':10,'PresynInhBip5AAmAII':10,
+        'GanglionCellPV5':1,'GanglionCellsOFFa':1,'GanglionCellsONa':1,'GanglionCelltONa':1,'GanglionCelltONaPre':1}
 
 classes = {'BipolarCell':BipolarCell,'AmacrineCell':AmacrineCell,'GanglionCell':GanglionCell,'Delay':Delay,'PresynapticSilencer':PresynapticSilencer}
 
@@ -76,3 +76,7 @@ for l in cells['GanglionCelltONa']:
         cell.out()
 
 ###############################################################################
+        
+# amacrine cells are faster on the rise so no chance to take a transient response
+# from them. more likely to get a sustained response because they cancel out initial
+# wave but keep the steady state wave

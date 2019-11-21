@@ -4,7 +4,7 @@ Create stimuli to probe the networks.
 
 import numpy as np
 
-def expanding_disk(pos,speed,width,exp_rate,maxwidth,amplitude,gridsize,duration,order=10):
+def expanding_disk(pos,speed,width,exp_rate,maxwidth,amplitude,gridsize,appears,duration,order=10):
     # Creates artificial stimuli of expanding disks. Params:
     # pos: 2 dim starting position in grid coordinates
     # speed: 2 dim speed vector, in pixels per time point
@@ -13,12 +13,14 @@ def expanding_disk(pos,speed,width,exp_rate,maxwidth,amplitude,gridsize,duration
     # maxwidth: the maximum attainable width of the disk
     # amplitude: peak amplitude of the disk
     # gridsize: the size of the grid, in pixels
+    # appears: the time point the disk first appears
     # duration: the temporal extent of the stimulus, in units of time
     # order: controls how sharp the transition on the margins of the disk is
     
-    xc = pos[0] + speed[0]*np.arange(duration)
-    yc = pos[1] + speed[1]*np.arange(duration)
-    w = width + exp_rate*np.arange(duration)
+    disk_dur = duration - appears
+    xc = pos[0] + speed[0]*np.arange(disk_dur)
+    yc = pos[1] + speed[1]*np.arange(disk_dur)
+    w = width + exp_rate*np.arange(disk_dur)
     w[w>maxwidth] = maxwidth
     
     # do a meshgrid over 3 coordinates (x,y,w)
@@ -26,7 +28,10 @@ def expanding_disk(pos,speed,width,exp_rate,maxwidth,amplitude,gridsize,duration
     x = np.arange(gridsize); y = np.arange(gridsize)
     X, Y, W = np.meshgrid(x,y,w)
     norm_dist = ((X-xc)**2+(Y-yc)**2)/W**2
-    stim = amplitude*np.exp(-1/2*norm_dist**int(order/2))
+    stim1 = amplitude*np.exp(-1/2*norm_dist**int(order/2))
+    
+    stim = np.zeros((gridsize,gridsize,duration))
+    stim[:,:,appears:duration] = stim1
     
     return stim
 
