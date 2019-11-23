@@ -6,6 +6,7 @@ from classes import * # necessary to import object classes
 from celltypes import *
 import numpy as np
 import network as net
+import matplotlib.pyplot as plt
 
 ###############################################################################
 
@@ -61,19 +62,24 @@ structs = {'BipolarCell1':BipolarCell1, 'BipolarCell2':BipolarCell2, 'BipolarCel
            'GanglionCellooDS37r':GanglionCellooDS37r, 'GanglionCellooDS37v':GanglionCellooDS37v, 'GanglionCellW3':GanglionCellW3,
            'GanglionCellsONa':GanglionCellsONa, 'GanglionCellFminiON':GanglionCellFminiON, 'GanglionCellFmidiON':GanglionCellFmidiON, 
            'GanglionCelltONa':GanglionCelltONa, 'GanglionCellsOnDS7id':GanglionCellsOnDS7id, 'GanglionCellsOnDS7ir':GanglionCellsOnDS7ir, 
-           'GanglionCellsOnDS7iv':GanglionCellsOnDS7iv, 'GanglionCelltOnDS7o':GanglionCelltOnDS7o, 'GanglionCelltONaPre':GanglionCelltONaPre}
+           'GanglionCellsOnDS7iv':GanglionCellsOnDS7iv, 'GanglionCelltOnDS7o':GanglionCelltOnDS7o, 'GanglionCelltONaPre':GanglionCelltONaPre,
+           'PresynapticSilencerBip5AAmAII':PresynapticSilencerBip5AAmAII}
 
 
-size = {'BipolarCell4':10,'BipolarCell5A':10,'BipolarCell6':10,'AmacrineCellAII':10,'PresynInhBip5AAmAII':10,
+'''
+# for transient vs sustained on bipolar cells
+size = {'BipolarCell4':10,'BipolarCell5A':10,'BipolarCell6':10,'AmacrineCellAII':10,'PresynapticSilencerBip5AAmAII':10,
         'GanglionCellPV5':1,'GanglionCellsOFFa':1,'GanglionCellsONa':1,'GanglionCelltONa':1,'GanglionCelltONaPre':1}
+'''
+
+size = {'BipolarCell1':1,'BipolarCell2':1,'BipolarCell3a':1,'BipolarCell3b':1,
+        'BipolarCell4':1,'BipolarCell5A':1,'BipolarCell5R':1,'BipolarCell5X':1,
+        'BipolarCellX':1,'BipolarCell6':1,'BipolarCell7':1,'BipolarCell8':1, 
+        'BipolarCell9':1,'BipolarCellR':1}
 
 classes = {'BipolarCell':BipolarCell,'AmacrineCell':AmacrineCell,'GanglionCell':GanglionCell,'Delay':Delay,'PresynapticSilencer':PresynapticSilencer}
 
 cells = net.network_init(structs,size,classes)
-
-for l in cells['GanglionCelltONa']: 
-    for cell in l: 
-        cell.out()
 
 ###############################################################################
         

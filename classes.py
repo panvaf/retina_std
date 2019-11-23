@@ -86,9 +86,6 @@ class BipolarCell(Element):
         
         else:
             self.spatiotemporal = attributes["spatiotemporal"]
-            
-        if np.array_equal(self.type,"Off"):
-            self.spatiotemporal = - self.spatiotemporal
         
         self.activation = attributes["activation"]
         self.threshold = attributes["threshold"]
@@ -300,6 +297,8 @@ def Spatial(center,attributes):
     
     if np.array_equal(attributes["spatial"],'DoG'):
         spatial = DoG(attributes["width"],attributes["on_off_ratio"],center,img_size)
+    if np.array_equal(attributes["spatial"],'Gauss'):
+        spatial = Gauss(attributes["width"],center,img_size)
     
     spatial = norm(spatial)
     
@@ -308,8 +307,7 @@ def Spatial(center,attributes):
 
 def DoG(sigmas,ratio,center,img_size):
     # Sigmas contain the standard deviations the positive (center) and negative
-    # (surround) part. To invert the parts. use argument "type" in attributes
-    # Ratio is the ratio of the peaks of the gaussians (center/surround)
+    # (surround) part. Ratio is the ratio of the peaks of the gaussians (center/surround)
     
     x = np.arange(0,img_size[0])
     y = np.arange(0,img_size[1])
@@ -322,6 +320,18 @@ def DoG(sigmas,ratio,center,img_size):
     # Normalization? Should it not be zero sum? (no reaction to constant input)
     
     return (gauss1 - gauss2)/(1+ratio)
+
+def Gauss(sigma,center,img_size):
+    # Sigma: standard deviation of the receptive field
+    
+    x = np.arange(0,img_size[0])
+    y = np.arange(0,img_size[1])
+    X, Y = np.meshgrid(x,y)
+    
+    norm_dist = 1/2*(((X-center[0])**2+(Y-center[1])**2)/sigma**2)
+    gauss =1/(2*np.pi*sigma**2)*np.exp(-norm_dist)
+    
+    return gauss
 
 def Gaussian(x,y,sigmax,sigmay,peak):
     norm_dist = 1/2*(x**2/sigmax**2+y**2/sigmay**2)
