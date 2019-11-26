@@ -21,16 +21,14 @@ import stimuli as stim
 # order of parameters in attributes is order of element position in connectivity,
 # and order element types are read in connectivity is determined in inputs
 
-image = stim.expanding_disk([100,100],[0,0],50,0,100,1,200,100,500) + \
-        stim.expanding_disk([100,100],[0,0],50,0,100,-1,200,300,500)
-#image = np.zeros((200,200,100))
+image = stim.expanding_disk([100,100],[0,0],50,0,100,1,200,1000,4000) + \
+        stim.expanding_disk([100,100],[0,0],50,0,100,-1,200,2500,4000)
 
-# there are also separate receptive fields of center and surround
 # The receptive fields Dawna gave me were sampled at 2 ms. I keep this time step here
 # however I could consider lowering it since the receptive fields of ganglion and
 # amacrine cells (differentiators in essense) are quite crude (10 ms duration)
-BipolarTemporals = loadmat('C:\\Users\\user\\Documents\\CNS\\1st Rotation\\data\\pantelis_bip_filters.mat')
-BipolarTemporals = BipolarTemporals['pantelis_bip_filters']
+BipolarTemporals = loadmat('C:\\Users\\user\\Documents\\CNS\\1st Rotation\\data\\bip_trf_Franke_spl09999tuk005causNorm.mat')
+BipolarTemporals = BipolarTemporals['kernels']
 PV5recurrent = loadmat('C:\\Users\\user\\Documents\\CNS\\1st Rotation\\data\\gc_fdbk_filt.mat')
 PV5recurrent = PV5recurrent['feedbackfilt']
 
@@ -42,73 +40,59 @@ PV5recurrent = PV5recurrent['feedbackfilt']
 
 BipolarCell1 = {"inputs":[image], "connectivity": [], "weights": np.array([1]),
     "attributes": {'type': 'Off', 'separable': True, 'spatial': 'Gauss', 'width': 30,
-    'temporal': 'stretched_sin', 'duration': 100, 'coeffs': [-2,-3],
-    'activation': 'relu', 'threshold': 50}}
+    'temporal': BipolarTemporals[:,0], 'activation': 'relu', 'threshold': 5}}
 
 BipolarCell2 = {"inputs":[image], "connectivity": [], "weights": np.array([1]),
     "attributes": {'type': 'Off', 'separable': True, 'spatial': 'Gauss', 'width': 30,
-    'temporal': 'stretched_sin', 'duration': 100, 'coeffs': [-2,-3],
-    'activation': 'relu', 'threshold': 50}}
+    'temporal': BipolarTemporals[:,1], 'activation': 'relu', 'threshold': 5}}
 
 BipolarCell3a = {"inputs":[image], "connectivity": [], "weights": np.array([1]),
     "attributes": {'type': 'Off', 'separable': True, 'spatial': 'Gauss', 'width': 30,
-    'temporal': 'stretched_sin', 'duration': 100, 'coeffs': [-2,-3],
-    'activation': 'relu', 'threshold': 60}}
+    'temporal': BipolarTemporals[:,2], 'activation': 'relu', 'threshold': 20}}
 
 BipolarCell3b = {"inputs":[image], "connectivity": [], "weights": np.array([1]),
     "attributes": {'type': 'Off', 'separable': True, 'spatial': 'Gauss', 'width': 30,
-    'temporal': 'stretched_sin', 'duration': 100, 'coeffs': [-2,-3],
-    'activation': 'relu', 'threshold': 60}}
+    'temporal': BipolarTemporals[:,3], 'activation': 'relu', 'threshold': 20}}
     
 BipolarCell4 = {"inputs":[image], "connectivity": [], "weights": np.array([1]),
     "attributes": {'type': 'Off', 'separable': True, 'spatial': 'Gauss', 'width': 30,
-    'temporal': 'stretched_sin', 'duration': 100, 'coeffs': [-2,-3],
-    'activation': 'relu', 'threshold': 55}}
+    'temporal': BipolarTemporals[:,4], 'activation': 'relu', 'threshold': 10}}
     
 BipolarCell5A = {"inputs":[image], "connectivity": [], "weights": np.array([1]),
     "attributes": {'type': 'On', 'separable': True, 'spatial': 'Gauss', 'width': 30,
-    'temporal': 'stretched_sin', 'duration': 100, 'coeffs': [2,3],
-    'activation': 'relu', 'threshold': 20}}
+    'temporal': BipolarTemporals[:,5], 'activation': 'relu', 'threshold': 0}}
     
 BipolarCell5R = {"inputs":[image], "connectivity": [], "weights": np.array([1]),
     "attributes": {'type': 'On', 'separable': True, 'spatial': 'Gauss', 'width': 30,
-    'temporal': 'stretched_sin', 'duration': 100, 'coeffs': [2,3],
-    'activation': 'relu', 'threshold': 30}}
+    'temporal': BipolarTemporals[:,6], 'activation': 'relu', 'threshold': 0}}
 
 BipolarCell5X = {"inputs":[image], "connectivity": [], "weights": np.array([1]),
     "attributes": {'type': 'On', 'separable': True, 'spatial': 'Gauss', 'width': 30,
-    'temporal': 'stretched_sin', 'duration': 100, 'coeffs': [2,3],
-    'activation': 'relu', 'threshold': 25}}
+    'temporal': BipolarTemporals[:,7], 'activation': 'relu', 'threshold': 0}}
     
 BipolarCellX = {"inputs":[image], "connectivity": [], "weights": np.array([1]),
     "attributes": {'type': 'On', 'separable': True, 'spatial': 'Gauss', 'width': 30,
-    'temporal': 'stretched_sin', 'duration': 100, 'coeffs': [2,3],
-    'activation': 'relu', 'threshold': 30}}
+    'temporal': BipolarTemporals[:,8], 'activation': 'relu', 'threshold': 5}}
     
 BipolarCell6 = {"inputs":[image], "connectivity": [], "weights": np.array([1]),
     "attributes": {'type': 'On', 'separable': True, 'spatial': 'Gauss', 'width': 30,
-    'temporal': 'stretched_sin', 'duration': 100, 'coeffs': [2,3],
-    'activation': 'relu', 'threshold': 10}}
+    'temporal': BipolarTemporals[:,9], 'activation': 'relu', 'threshold': 0}}
     
 BipolarCell7 = {"inputs":[image], "connectivity": [], "weights": np.array([1]),
     "attributes": {'type': 'On', 'separable': True, 'spatial': 'Gauss', 'width': 30,
-    'temporal': 'stretched_sin', 'duration': 100, 'coeffs': [2,3],
-    'activation': 'relu', 'threshold': 10}}
+    'temporal': BipolarTemporals[:,10], 'activation': 'relu', 'threshold': 0}}
 
 BipolarCell8 = {"inputs":[image], "connectivity": [], "weights": np.array([1]),
     "attributes": {'type': 'On', 'separable': True, 'spatial': 'Gauss', 'width': 30,
-    'temporal': 'stretched_sin', 'duration': 100, 'coeffs': [2,3],
-    'activation': 'relu', 'threshold': 20}}
+    'temporal': BipolarTemporals[:,11], 'activation': 'relu', 'threshold': 0}}
 
 BipolarCell9 = {"inputs":[image], "connectivity": [], "weights": np.array([1]),
     "attributes": {'type': 'On', 'separable': True, 'spatial': 'Gauss', 'width': 30,
-    'temporal': 'stretched_sin', 'duration': 100, 'coeffs': [2,3],
-    'activation': 'relu', 'threshold': 20}}
+    'temporal': BipolarTemporals[:,12], 'activation': 'relu', 'threshold': 0}}
 
 BipolarCellR = {"inputs":[image], "connectivity": [], "weights": np.array([1]),
     "attributes": {'type': 'On', 'separable': True, 'spatial': 'Gauss', 'width': 30,
-    'temporal': 'stretched_sin', 'duration': 100, 'coeffs': [2,3],
-    'activation': 'relu', 'threshold': 0}}
+    'temporal': BipolarTemporals[:,13], 'activation': 'relu', 'threshold': 0}}
     
 ###############################################################################
     
