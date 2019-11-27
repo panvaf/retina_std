@@ -21,17 +21,17 @@ import stimuli as stim
 # order of parameters in attributes is order of element position in connectivity,
 # and order element types are read in connectivity is determined in inputs
 
-image = stim.expanding_disk([100,100],[0,0],50,0,100,1,200,1000,4000) + \
-        stim.expanding_disk([100,100],[0,0],50,0,100,-1,200,2500,4000)
+image = stim.expanding_disk([25,25],[0,0],10,0,25,1,50,1000,4000) + \
+        stim.expanding_disk([25,25],[0,0],10,0,25,-1,50,2500,4000)
 
 # The receptive fields Dawna gave me were sampled at 2 ms. I keep this time step here
 # however I could consider lowering it since the receptive fields of ganglion and
 # amacrine cells (differentiators in essense) are quite crude (10 ms duration)
-BipolarTemporals = loadmat('C:\\Users\\user\\Documents\\CNS\\1st Rotation\\data\\bip_trf_Franke_spl09999tuk005causNorm.mat')
+BipolarTemporals = loadmat('/home/meisterlab/Documents/pantelis/data/bip_trf_Franke_spl09999tuk005causNorm.mat')
 BipolarTemporals = BipolarTemporals['kernels']
-AmacrineTemporals = loadmat('C:\\Users\\user\\Documents\\CNS\\1st Rotation\\data\\am_trf_Berens_spl0995tuk005causNorm.mat')
+AmacrineTemporals = loadmat('/home/meisterlab//Documents/pantelis/data/am_trf_Berens_spl0995tuk005causNorm.mat')
 AmacrineTemporals = AmacrineTemporals['kernels']
-PV5recurrent = loadmat('C:\\Users\\user\\Documents\\CNS\\1st Rotation\\data\\gc_fdbk_filt.mat')
+PV5recurrent = loadmat('/home/meisterlab//Documents/pantelis/data/gc_fdbk_filt.mat')
 PV5recurrent = PV5recurrent['feedbackfilt']
 
 # make sure any receptive fields that are determined by the user are normalised
@@ -127,7 +127,7 @@ BipolarCell6TOAmacrineCellAIIw = temp[2]; BipolarCell6TOAmacrineCellAIIconn = li
 AmacrineCellAII = {"inputs":['BipolarCell1','BipolarCell2','BipolarCell3a','BipolarCell3b',
     'BipolarCell4','BipolarCell5A','BipolarCell5R','BipolarCell5X','BipolarCell6','BipolarCell7',
     'BipolarCell8','BipolarCell9','BipolarCellR'], "connectivity": {'BipolarCell6': BipolarCell6TOAmacrineCellAIIconn},
-    "weights": np.array(BipolarCell6TOAmacrineCellAIIw), "attributes": {'temporal': ['stretched_sin']*1,'duration': [10]*1,
+    "weights": np.array(BipolarCell6TOAmacrineCellAIIw), "attributes": {'temporal': ['stretched_sin']*1,'duration': [700]*1,
     'coeffs': [[2,3]]*1, 'activation': 'relu','threshold': 1.0}}
 
 BipolarCell3bTOAmacrineCell1 = [(-3,0,.5),(-2,0,.5),(-1,0,.5),(0,0,.5),(1,0,.5),(2,0,.5),(3,0,.5),(4,0,.5)]
@@ -159,16 +159,16 @@ PresynapticSilencerBip5AAmAII = {"inputs":['BipolarCell5A','AmacrineCellAII'],
 
 phenom_rec_field = np.array([250,250])
 n_amII = (phenom_rec_field/BipolarCell6['attributes']['width']).astype(int)  # using bipolar because amacrines do not have spatial rec fields defined
-AmacrineCellIITOGanglionCellsOFFa = [(int(x-round(n_amII[0]/2)),int(y-round(n_amII[1]/2)),-1) for x in range(n_amII[0]) for y in range(n_amII[1])]
-temp =  list(zip(*AmacrineCellIITOGanglionCellsOFFa))
-AmacrineCellIITOGanglionCellsOFFaw = temp[2]; AmacrineCellIITOGanglionCellsOFFaconn = list(zip(temp[0],temp[1]))
-total_n = len(AmacrineCellIITOGanglionCellsOFFaconn)
+AmacrineCellAIITOGanglionCellsOFFa = [(int(x-round(n_amII[0]/2)),int(y-round(n_amII[1]/2)),-1) for x in range(n_amII[0]) for y in range(n_amII[1])]
+temp =  list(zip(*AmacrineCellAIITOGanglionCellsOFFa))
+AmacrineCellAIITOGanglionCellsOFFaw = temp[2]; AmacrineCellAIITOGanglionCellsOFFaconn = list(zip(temp[0],temp[1]))
+total_n = len(AmacrineCellAIITOGanglionCellsOFFaconn)
 
 # bipolar 1 and 2 are OFF cells, they could also connect directly to here
 
 GanglionCellsOFFa = {"inputs":['BipolarCell1','BipolarCell2','AmacrineCellAII'],
-    "connectivity": {'AmacrineCellAII':AmacrineCellIITOGanglionCellsOFFaconn},
-    "weights": np.array(AmacrineCellIITOGanglionCellsOFFaw), "attributes":
+    "connectivity": {'AmacrineCellAII':AmacrineCellAIITOGanglionCellsOFFaconn},
+    "weights": np.array(AmacrineCellAIITOGanglionCellsOFFaw), "attributes":
     {'temporal': ['stretched_sin']*total_n,'duration': [10]*total_n,
     'coeffs': [[2,3]]*total_n, 'activation': 'relu','threshold': 0}}
 
@@ -354,11 +354,11 @@ BipolarCellR["attributes"]['width'] = BipolarCellR["attributes"]['width']/pixel
 # BipolarCell9["attributes"]['duration'] = BipolarCell9["attributes"]['duration']/temporal_res
 # BipolarCellR["attributes"]['duration'] = BipolarCellR["attributes"]['duration']/temporal_res
 
-AmacrineCellOff["attributes"]['duration'] = [dur/temporal_res for dur in AmacrineCellOff["attributes"]['duration']]
-AmacrineCellOffStar["attributes"]['duration'] = [dur/temporal_res for dur in AmacrineCellOffStar["attributes"]['duration']]
-AmacrineCellOn["attributes"]['duration'] = [dur/temporal_res for dur in AmacrineCellOn["attributes"]['duration']]
-AmacrineCellOnStar["attributes"]['duration'] = [dur/temporal_res for dur in AmacrineCellOnStar["attributes"]['duration']]
-AmacrineCellAII["attributes"]['duration'] = [dur/temporal_res for dur in AmacrineCellAII["attributes"]['duration']]
+#AmacrineCellOff["attributes"]['duration'] = [dur/temporal_res for dur in AmacrineCellOff["attributes"]['duration']]
+#AmacrineCellOffStar["attributes"]['duration'] = [dur/temporal_res for dur in AmacrineCellOffStar["attributes"]['duration']]
+#AmacrineCellOn["attributes"]['duration'] = [dur/temporal_res for dur in AmacrineCellOn["attributes"]['duration']]
+#AmacrineCellOnStar["attributes"]['duration'] = [dur/temporal_res for dur in AmacrineCellOnStar["attributes"]['duration']]
+#AmacrineCellAII["attributes"]['duration'] = [dur/temporal_res for dur in AmacrineCellAII["attributes"]['duration']]
 
 GanglionCellsOFFa["attributes"]['duration'] = [dur/temporal_res for dur in GanglionCellsOFFa["attributes"]['duration']]
 GanglionCellFminiOFF["attributes"]['duration'] = [dur/temporal_res for dur in GanglionCellFminiOFF["attributes"]['duration']]
