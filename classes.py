@@ -98,7 +98,7 @@ class BipolarCell(Element):
             pass
         else:
             # the first element of the list 'inputs' should contain the image
-            temp = signal.fftconvolve(self.inputs[0],self.spatiotemporal,'same',axes = 2)
+            temp = signal.fftconvolve(self.inputs[0],self.spatiotemporal,'full',axes = 2)[:,:,0:np.size(self.inputs[0],2)]
             self.output = activation(np.sum(temp,axis = (0,1)),self.activation,self.threshold)
         
         return self.output
@@ -146,7 +146,7 @@ class AmacrineCell(Element):
             
             for i in range(self.n_in):
                 # Different temporal receptive field for each input
-                values[i,:] = signal.fftconvolve(values[i,:],self.temporal[i],'same')
+                values[i,:] = signal.fftconvolve(values[i,:],self.temporal[i],'full')[0:np.size(values[i,:])]
                 
             # Use transpose to do multiplication with np.dot
             temp = np.dot(values.transpose(),self.w).transpose()
@@ -213,7 +213,7 @@ class GanglionCell(Element):
             
             for i in range(self.n_in):
                 # Different temporal receptive field for each input
-                values[i,:] = signal.fftconvolve(values[i,:],self.temporal[i],'same')
+                values[i,:] = signal.fftconvolve(values[i,:],self.temporal[i],'full')[0:np.size(values[i,:])]
     
             # Use transpose to do multiplication with np.dot
             temp = np.dot(values.transpose(),self.w).transpose()

@@ -6,6 +6,7 @@ from classes import * # necessary to import object classes
 from celltypes import *
 import numpy as np
 import network as net
+import matplotlib.pyplot as plt
 
 ###############################################################################
 
@@ -31,11 +32,22 @@ size = {'BipolarCell4':10,'BipolarCell5A':10,'BipolarCell6':10,'AmacrineCellAII'
         'GanglionCellPV5':1,'GanglionCellsOFFa':1,'GanglionCellsONa':1,'GanglionCelltONa':1,'GanglionCelltONaPre':1}
 '''
 
-size = {'BipolarCell5A':10, 'BipolarCell6':10, 'AmacrineCellAII':10, 'GanglionCelltONa':1}
+size = {'BipolarCell5A':5,'BipolarCell6':5,'AmacrineCellAII':5,'GanglionCelltONa':1,'GanglionCellsONa':1}
 
 classes = {'BipolarCell':BipolarCell,'AmacrineCell':AmacrineCell,'GanglionCell':GanglionCell,'Delay':Delay,'PresynapticSilencer':PresynapticSilencer}
 
 cells = net.network_init(structs,size,classes)
+
+tONa = cells['GanglionCelltONa'][0][0].out()
+sONa = cells['GanglionCellsONa'][0][0].out()
+
+t = np.arange(tONa.size)*0.002
+plt.plot(t,tONa)
+plt.plot(t,sONa)
+plt.xlabel('Time (s)')
+plt.ylabel('Firing rate (spikes/s)')
+plt.title('Transient vs Sustained On Alpha Ganglion cells')
+plt.legend('Transient ONaRGC','Sustained ONaRGC')
 
 ###############################################################################
         
