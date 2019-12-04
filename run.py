@@ -28,27 +28,26 @@ structs = {'BipolarCell1':BipolarCell1, 'BipolarCell2':BipolarCell2, 'BipolarCel
 
 '''
 # for transient vs sustained on bipolar cells
-size = {'BipolarCell4':10,'BipolarCell5A':10,'BipolarCell6':10,'AmacrineCellAII':10,'PresynapticSilencerBip5AAmAII':10,
-        'GanglionCellPV5':1,'GanglionCellsOFFa':1,'GanglionCellsONa':1,'GanglionCelltONa':1,'GanglionCelltONaPre':1}
+size = {'BipolarCell5A':5,'BipolarCell6':5,'AmacrineCellAII':5,'GanglionCelltONa':1,'GanglionCellsONa':1}
 '''
 
-size = {'BipolarCell5A':5,'BipolarCell6':5,'AmacrineCellAII':5,'GanglionCelltONa':1,'GanglionCellsONa':1}
+size = {'BipolarCell1':1,'BipolarCell2':1,'BipolarCell3a':1,'BipolarCell3b':1,'BipolarCell4':1}
 
 classes = {'BipolarCell':BipolarCell,'AmacrineCell':AmacrineCell,'GanglionCell':GanglionCell,'Delay':Delay,'PresynapticSilencer':PresynapticSilencer}
 
 cells = net.network_init(structs,size,classes)
-
+'''
 tONa = cells['GanglionCelltONa'][0][0].out()
 sONa = cells['GanglionCellsONa'][0][0].out()
 
 t = np.arange(tONa.size)*0.002
-plt.plot(t,tONa)
-plt.plot(t,sONa)
+plt.plot(t,tONa, label='Transient ONaRGC')
+plt.plot(t,sONa, label='Sustained ONaRGC')
 plt.xlabel('Time (s)')
 plt.ylabel('Firing rate (spikes/s)')
 plt.title('Transient vs Sustained On Alpha Ganglion cells')
-plt.legend('Transient ONaRGC','Sustained ONaRGC')
-
+plt.legend()
+'''
 ###############################################################################
         
 # amacrine cells are faster on the rise so no chance to take a transient response

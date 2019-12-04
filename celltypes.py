@@ -21,8 +21,8 @@ import stimuli as stim
 # order of parameters in attributes is order of element position in connectivity,
 # and order element types are read in connectivity is determined in inputs
 
-image = stim.expanding_disk([25,25],[0,0],20,0,25,1,50,1000,4000) + \
-        stim.expanding_disk([25,25],[0,0],20,0,25,-1,50,2500,4000)
+image = stim.expanding_disk([25,25],[0,0],20,0,25,1,50,1000,5000) + \
+        stim.expanding_disk([25,25],[0,0],20,0,25,-2,50,2500,5000)
 
 # The receptive fields Dawna gave me were sampled at 2 ms. I keep this time step here
 # however I could consider lowering it since the receptive fields of ganglion and
@@ -46,7 +46,8 @@ BipolarCell1 = {"inputs":[image], "connectivity": [], "weights": np.array([1]),
 
 BipolarCell2 = {"inputs":[image], "connectivity": [], "weights": np.array([1]),
     "attributes": {'type': 'Off', 'separable': True, 'spatial': 'Gauss', 'width': 30,
-    'temporal': BipolarTemporals[:,1], 'activation': 'relu', 'threshold': 5}}
+    'temporal': 'stretched_sin','duration': 800,'coeffs': -norm([2,3]), 
+    'activation': 'relu', 'threshold': 0}}
 
 BipolarCell3a = {"inputs":[image], "connectivity": [], "weights": np.array([1]),
     "attributes": {'type': 'Off', 'separable': True, 'spatial': 'Gauss', 'width': 30,
@@ -340,7 +341,7 @@ BipolarCell9["attributes"]['width'] = BipolarCell9["attributes"]['width']/pixel
 BipolarCellR["attributes"]['width'] = BipolarCellR["attributes"]['width']/pixel
 
 # BipolarCell1["attributes"]['duration'] = BipolarCell1["attributes"]['duration']/temporal_res
-# BipolarCell2["attributes"]['duration'] = BipolarCell2["attributes"]['duration']/temporal_res
+BipolarCell2["attributes"]['duration'] = BipolarCell2["attributes"]['duration']/temporal_res
 # BipolarCell3a["attributes"]['duration'] = BipolarCell3a["attributes"]['duration']/temporal_res
 # BipolarCell3b["attributes"]['duration'] = BipolarCell3b["attributes"]['duration']/temporal_res
 # BipolarCell4["attributes"]['duration'] = BipolarCell4["attributes"]['duration']/temporal_res
