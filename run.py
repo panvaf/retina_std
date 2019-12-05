@@ -31,7 +31,7 @@ structs = {'BipolarCell1':BipolarCell1, 'BipolarCell2':BipolarCell2, 'BipolarCel
 size = {'BipolarCell5A':5,'BipolarCell6':5,'AmacrineCellAII':5,'GanglionCelltONa':1,'GanglionCellsONa':1}
 '''
 
-size = {'BipolarCell1':1,'BipolarCell2':1,'BipolarCell3a':1,'BipolarCell3b':1,'BipolarCell4':1}
+size = {'BipolarCell1':5,'GanglionCellsOFFa':1}
 
 classes = {'BipolarCell':BipolarCell,'AmacrineCell':AmacrineCell,'GanglionCell':GanglionCell,'Delay':Delay,'PresynapticSilencer':PresynapticSilencer}
 

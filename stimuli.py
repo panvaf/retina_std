@@ -36,7 +36,7 @@ def expanding_disk(pos,speed,width,exp_rate,maxwidth,amplitude,gridsize,appears,
     return stim
 
 
-def moving_bars(k,speed,theta,contrast,gridsize,duration):
+def moving_bars(k,speed,theta,phase,contrast,gridsize,duration):
     # Creates artificial stimuli of moving bars. Params:
     # k: spatial frequency of the bars, in inverse pixel values
     # speed: amplitude and direction of moving speed
@@ -48,12 +48,12 @@ def moving_bars(k,speed,theta,contrast,gridsize,duration):
     x = np.arange(gridsize); y = np.arange(gridsize); t = np.arange(duration)
     X, Y, T = np.meshgrid(x,y,t)
     
-    stim = np.cos(k*X*np.cos(theta)+k*Y*np.sin(theta)-2*np.pi*speed*T)
+    stim = np.cos(2*np.pi*k*X*np.cos(theta)+2*np.pi*k*Y*np.sin(theta)+phase-2*np.pi*speed*T)
     
     return contrast*np.sign(stim)
 
 
-def counterphase_grating(k,f,theta,contrast,gridsize,duration):
+def counterphase_grating(k,f,theta,phase,contrast,gridsize,duration):
     # Creates artificial stimuli of moving bars. Equation 2.18 from Dayan & Abbott. Params:
     # k: spatial frequency of the bars, in inverse pixel values
     # f: temporal frequency of the bars, in inverse temporal unit values
@@ -65,7 +65,7 @@ def counterphase_grating(k,f,theta,contrast,gridsize,duration):
     x = np.arange(gridsize); y = np.arange(gridsize); t = np.arange(duration)
     X, Y, T = np.meshgrid(x,y,t)
     
-    stim = contrast*np.cos(k*X*np.cos(theta)+k*Y*np.sin(theta))*np.cos(2*np.pi*f*T)
+    stim = contrast*np.cos(2*np.pi*k*X*np.cos(theta)+2*np.pi*k*Y*np.sin(theta)+phase)*np.cos(2*np.pi*f*T)
     
     return stim
 
