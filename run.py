@@ -27,16 +27,18 @@ structs = {'BipolarCell1':BipolarCell1, 'BipolarCell2':BipolarCell2, 'BipolarCel
            'PresynapticSilencerBip5AAmAII':PresynapticSilencerBip5AAmAII}
 
 '''
-# for transient vs sustained on bipolar cells
+# for transient vs sustained on ganglion cells
 size = {'BipolarCell5A':5,'BipolarCell6':5,'AmacrineCellAII':5,'GanglionCelltONa':1,'GanglionCellsONa':1}
 '''
 
+# for the sustained off ganglion cell
 size = {'BipolarCell1':5,'GanglionCellsOFFa':1}
 
 classes = {'BipolarCell':BipolarCell,'AmacrineCell':AmacrineCell,'GanglionCell':GanglionCell,'Delay':Delay,'PresynapticSilencer':PresynapticSilencer}
 
 cells = net.network_init(structs,size,classes)
 '''
+# transient vs sustained on RGCs
 tONa = cells['GanglionCelltONa'][0][0].out()
 sONa = cells['GanglionCellsONa'][0][0].out()
 
@@ -48,6 +50,23 @@ plt.ylabel('Firing rate (spikes/s)')
 plt.title('Transient vs Sustained On Alpha Ganglion cells')
 plt.legend()
 '''
+
+sOFFa = cells['GanglionCellsOFFa'][0][0].out()
+t = np.arange(sOFFa.size)*0.002
+
+plt.figure()
+plt.subplot(122)
+plt.plot(t,sOFFa)
+plt.xlabel('Time (s)')
+plt.ylabel('Firing rate (spikes/s)')
+plt.title('s-OFF aRGC response')
+plt.subplot(121)
+plt.imshow(image[:,:,0],extent=[0,250,250,0])
+plt.title('Stimulus for k = {:.2f} mm^-1'.format(k/5*1000))
+plt.ylabel('y (um)')
+plt.xlabel('x (um)')
+plt.tight_layout()
+plt.show()
 ###############################################################################
         
 # amacrine cells are faster on the rise so no chance to take a transient response

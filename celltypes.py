@@ -21,8 +21,10 @@ import stimuli as stim
 # order of parameters in attributes is order of element position in connectivity,
 # and order element types are read in connectivity is determined in inputs
 
-image = stim.moving_bars(1/70,0,0,np.pi/4,1,50,2500) # active
-# image = stim.moving_bars(1/50,0,0,0,1,50,2500) # inactive
+k = 1/70 # active
+#k = 1/60 # inactive
+phi = np.pi*(1-50*k)
+image = stim.moving_bars(k,0,0,phi,1,50,2500)
 
 # The receptive fields Dawna gave me were sampled at 2 ms. I keep this time step here
 # however I could consider lowering it since the receptive fields of ganglion and
@@ -169,7 +171,7 @@ total_n = len(AmacrineCellAIITOGanglionCellsOFFaconn)
 
 phenom_rec_field = np.array([250,250])
 n_bip1 = (phenom_rec_field/BipolarCell1['attributes']['width']).astype(int)  # using bipolar because amacrines do not have spatial rec fields defined
-BipolarCell1TOGanglionCellsOFFa = [(int(x-round(n_bip1[0]/2)),int(y-round(n_bip1[1]/2)),.5) for x in range(n_bip1[0]) for y in range(n_bip1[1])]
+BipolarCell1TOGanglionCellsOFFa = [(int(x-round(n_bip1[0]/2)),int(y-round(n_bip1[1]/2)),Gaussian(x-n_bip1[0]/2,y-n_bip1[1]/2,n_bip1[0]/3,n_bip1[1]/3,.5)) for x in range(n_bip1[0]) for y in range(n_bip1[1])]
 temp =  list(zip(*BipolarCell1TOGanglionCellsOFFa))
 BipolarCell1TOGanglionCellsOFFaw = temp[2]; BipolarCell1TOGanglionCellsOFFaconn = list(zip(temp[0],temp[1]))
 total_n = len(BipolarCell1TOGanglionCellsOFFaconn)
