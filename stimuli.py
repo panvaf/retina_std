@@ -22,7 +22,10 @@ def expanding_disk(pos,speed,width,exp_rate,maxwidth,amplitude,gridsize,appears,
     yc = pos[1] + speed[1]*np.arange(disk_dur)
     w = width + exp_rate*np.arange(disk_dur)
     w[w>maxwidth] = maxwidth
-    
+    # correction for negative expansion rates
+    if exp_rate<0:
+            w[w<1] = 1
+        
     # do a meshgrid over 3 coordinates (x,y,w)
     
     x = np.arange(gridsize); y = np.arange(gridsize)
@@ -32,6 +35,26 @@ def expanding_disk(pos,speed,width,exp_rate,maxwidth,amplitude,gridsize,appears,
     
     stim = np.zeros((gridsize,gridsize,duration))
     stim[:,:,appears:duration] = stim1
+    
+    return stim
+
+def expanding_annuli(pos,speed,width,init,exp_rate,maxsize,amplitude,gridsize,appears,duration,order=10):
+    # Creates artificial stimuli of expanding annuli. Params:
+    # pos: 2 dim starting position in grid coordinates
+    # speed: 2 dim speed vector, in pixels per time point
+    # width: the width of the annulus
+    # init: the initial size of the annulus
+    # exp_rate: the rate with which the annulus expands, in pixels per time point
+    # maxsize: the maximum attainable width of the annulus
+    # amplitude: peak amplitude of the annulus
+    # gridsize: the size of the grid, in pixels
+    # appears: the time point the annulus first appears
+    # duration: the temporal extent of the stimulus, in units of time
+    # order: controls how sharp the transition on the margins of the annulus is
+    
+    base = expanding_disk(pos,speed,init,exp_rate,maxsize,amplitude,gridsize,appears,duration,order)
+    extract = expanding_disk(pos,speed,init-width,exp_rate,maxsize-width,amplitude,gridsize,appears,duration,order)
+    stim = base - extract    
     
     return stim
 

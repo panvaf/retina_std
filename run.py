@@ -32,7 +32,7 @@ size = {'BipolarCell5A':5,'BipolarCell6':5,'AmacrineCellAII':5,'GanglionCelltONa
 '''
 
 # for the sustained off ganglion cell
-size = {'BipolarCell1':5,'GanglionCellsOFFa':1}
+size = {'BipolarCell2':5,'BipolarCell6':5,'AmacrineCellAII':5,'GanglionCellsOFFa':1}
 
 classes = {'BipolarCell':BipolarCell,'AmacrineCell':AmacrineCell,'GanglionCell':GanglionCell,'Delay':Delay,'PresynapticSilencer':PresynapticSilencer}
 

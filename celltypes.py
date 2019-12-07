@@ -21,7 +21,7 @@ import stimuli as stim
 # order of parameters in attributes is order of element position in connectivity,
 # and order element types are read in connectivity is determined in inputs
 
-k = 1/70 # active
+k = 1/15 # active
 #k = 1/60 # inactive
 phi = np.pi*(1-50*k)
 image = stim.moving_bars(k,0,0,phi,1,50,2500)
@@ -49,7 +49,7 @@ BipolarCell1 = {"inputs":[image], "connectivity": [], "weights": np.array([1]),
 
 BipolarCell2 = {"inputs":[image], "connectivity": [], "weights": np.array([1]),
     "attributes": {'type': 'Off', 'separable': True, 'spatial': 'Gauss', 'width': 30,
-    'temporal': 'stretched_sin','duration': 800,'coeffs': -norm([2,3]), 
+    'temporal': 'stretched_sin','duration': 800,'coeffs': -norm([2,2]), 
     'activation': 'relu', 'threshold': 0}}
 
 BipolarCell3a = {"inputs":[image], "connectivity": [], "weights": np.array([1]),
@@ -170,16 +170,23 @@ total_n = len(AmacrineCellAIITOGanglionCellsOFFaconn)
 '''
 
 phenom_rec_field = np.array([250,250])
-n_bip1 = (phenom_rec_field/BipolarCell1['attributes']['width']).astype(int)  # using bipolar because amacrines do not have spatial rec fields defined
-BipolarCell1TOGanglionCellsOFFa = [(int(x-round(n_bip1[0]/2)),int(y-round(n_bip1[1]/2)),Gaussian(x-n_bip1[0]/2,y-n_bip1[1]/2,n_bip1[0]/3,n_bip1[1]/3,.5)) for x in range(n_bip1[0]) for y in range(n_bip1[1])]
-temp =  list(zip(*BipolarCell1TOGanglionCellsOFFa))
-BipolarCell1TOGanglionCellsOFFaw = temp[2]; BipolarCell1TOGanglionCellsOFFaconn = list(zip(temp[0],temp[1]))
-total_n = len(BipolarCell1TOGanglionCellsOFFaconn)
+n_bip2 = (phenom_rec_field/BipolarCell2['attributes']['width']).astype(int)  # using bipolar because amacrines do not have spatial rec fields defined
+BipolarCell2TOGanglionCellsOFFa = [(int(x-round(n_bip2[0]/2)),int(y-round(n_bip2[1]/2)),Gaussian(x-n_bip2[0]/2,y-n_bip2[1]/2,n_bip2[0]/3,n_bip2[1]/3,.2)) for x in range(n_bip2[0]) for y in range(n_bip2[1])]
+temp =  list(zip(*BipolarCell2TOGanglionCellsOFFa))
+BipolarCell2TOGanglionCellsOFFaw = temp[2]; BipolarCell2TOGanglionCellsOFFaconn = list(zip(temp[0],temp[1]))
+
+n_amII = (phenom_rec_field/BipolarCell6['attributes']['width']/2).astype(int) 
+AmacrineCellAIITOGanglionCellsOFFa = [(int(x-round(n_amII[0]/2)),int(y-round(n_amII[1]/2)),Gaussian(x-n_amII[0]/2,y-n_amII[1]/2,n_amII[0]/4,n_amII[1]/4,-1)) for x in range(n_amII[0]) for y in range(n_amII[1])]
+temp =  list(zip(*AmacrineCellAIITOGanglionCellsOFFa))
+AmacrineCellAIITOGanglionCellsOFFaw = temp[2]; AmacrineCellAIITOGanglionCellsOFFaconn = list(zip(temp[0],temp[1]))
+
+weights = np.array(np.concatenate((BipolarCell2TOGanglionCellsOFFaw,AmacrineCellAIITOGanglionCellsOFFaw)))
+total_n = len(weights)
 
 GanglionCellsOFFa = {"inputs":['BipolarCell1','BipolarCell2','AmacrineCellAII'],
-    "connectivity": {'BipolarCell1':BipolarCell1TOGanglionCellsOFFaconn},
-    "weights": np.array(BipolarCell1TOGanglionCellsOFFaw), "attributes":
-    {'temporal': ['stretched_sin']*total_n,'duration': [10]*total_n,
+    "connectivity": {'BipolarCell2':BipolarCell2TOGanglionCellsOFFaconn, 
+    'AmacrineCellAII':AmacrineCellAIITOGanglionCellsOFFaconn },"weights": weights,
+    "attributes": {'temporal': ['stretched_sin']*total_n,'duration': [10]*total_n,
     'coeffs': [[2,3]]*total_n, 'activation': 'relu','threshold': 100}}
 
 GanglionCellFminiOFF = {"inputs":['BipolarCell1','BipolarCell2','AmacrineCellAII'], "connectivity": {'BipolarCell1':
