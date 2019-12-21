@@ -8,7 +8,7 @@ from scipy import signal
 import copy as cp
 
 # Global variables
-image_size = np.array([250, 250])      # in um
+image_size = np.array([500, 500])      # in um
 pixel = 5                    # in um
 img_size = (image_size/pixel).astype(int)  # number
 temporal_res = 2            # in msec
